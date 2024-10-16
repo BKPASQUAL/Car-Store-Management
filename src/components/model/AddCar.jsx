@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Uploader, Input, Button, Divider } from "rsuite";
+import { Input, Button, Divider } from "rsuite";
 import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 import "../../assets/css/AddCar.css";
 import { useAddCarMutation } from "../../store/api/carStore";
@@ -10,29 +10,37 @@ function AddCar() {
   const { register, handleSubmit, reset } = useForm();
   const [selectedFiles, setSelectedFiles] = React.useState([]);
 
-  const handleImageUpload = (files) => {
-    setSelectedFiles(files);
-    console.log("Selected Images:", files);
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    // Only allow a maximum of 5 files
+    if (files.length + selectedFiles.length > 5) {
+      alert("You can only upload up to 5 photos.");
+      return;
+    }
+
+    // Update the selected files
+    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
   };
 
+  const removeImage = (index) => {
+    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
   const onSubmit = async (data) => {
     const formData = new FormData();
 
-    // Append all form data except images
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
 
-    // Append selected files to FormData
     selectedFiles.forEach((file) => {
-      formData.append("CarPhotos", file.blobFile); // Use `blobFile` from the Uploader's file object
+      formData.append("CarPhotos", file); // Ensure 'CarPhotos' matches the backend field name
     });
 
     try {
-      // Send data to the backend using the mutation
       const response = await addCar(formData);
       console.log("Response:", response);
-      reset(); // Reset the form after successful submission
+      reset();
+      setSelectedFiles([]);
     } catch (error) {
       console.error("Error uploading data:", error);
     }
@@ -47,17 +55,38 @@ function AddCar() {
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="addCar-mid">
-            <Uploader
-              multiple
-              listType="picture"
-              accept="image/jpeg, image/png, image/gif"
-              action="//jsonplaceholder.typicode.com/posts/"
-              onChange={handleImageUpload}
-            >
-              <button type="button">
-                <CameraRetroIcon />
-              </button>
-            </Uploader>
+            <label htmlFor="carPhotos" className="upload-label">
+              <CameraRetroIcon />
+              <input
+                id="carPhotos"
+                type="file"
+                multiple
+                accept="image/jpeg, image/png, image/gif"
+                onChange={handleImageUpload}
+                className="custom-file-input"
+              />
+            </label>
+            <div className="image-previews">
+              {selectedFiles.map((file, index) => (
+                <div key={index} className="image-preview">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Preview ${index + 1}`}
+                    className="preview-img"
+                  />
+                  <button
+                    type="button"
+                    className="remove-btn"
+                    onClick={() => removeImage(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+            {selectedFiles.length >= 5 && (
+              <p className="error-text">You can only upload up to 5 photos.</p>
+            )}
           </div>
           <div className="addCar-inputFields">
             <div className="addCar-input-left">
@@ -156,7 +185,12 @@ function AddCar() {
             </div>
           </div>
           <div className="addCar-btm">
-            <Button appearance="primary" className="addCar-savebtm" type="submit">
+            <Button
+              appearance="primary"
+              className="addCar-savebtm"
+              type="submit"
+              disabled={selectedFiles.length === 0}
+            >
               Save
             </Button>
             <Button
@@ -164,6 +198,10 @@ function AddCar() {
               color="red"
               className="addCar-cancelbtm"
               type="button"
+              onClick={() => {
+                reset();
+                setSelectedFiles([]);
+              }}
             >
               Cancel
             </Button>
