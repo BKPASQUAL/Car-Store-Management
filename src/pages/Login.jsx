@@ -23,7 +23,7 @@ function Login() {
         const roleId = response.data.payload.roleId;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("roleId", roleId);
-        navigate("home/dashboard");
+        navigate("home/dashbourd");
         const Toast = Swal.mixin({
           toast: true,
           position: "top-end",

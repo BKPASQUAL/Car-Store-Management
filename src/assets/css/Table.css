@@ -1,0 +1,29 @@
+.product-table {
+    margin: 3%;
+    width: 94% !important;
+    margin-top: 0;
+    /* text-align: center;  */
+  }
+  
+  .product-table th, 
+  .product-table td {
+    vertical-align: middle; /* Centers content vertically */
+  }
+  
+  .table-fixed thead {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* Add your desired background color */
+    z-index: 1;
+  }
+
+  .table-icon {
+    color: blue !important; /* Makes the edit icon blue */
+    cursor: pointer; /* Changes the cursor to a pointer on hover */
+  }
+  
+  .table-icon-pen {
+    color: red !important; /* Makes the delete icon red */
+    cursor: pointer; /* Changes the cursor to a pointer on hover */
+  }
+  
