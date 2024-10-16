@@ -7,7 +7,17 @@ export const carStoreApi = api.injectEndpoints({
     getAllCars: builder.query({
       query: () => "/cars",
     }),
+
+    addCar: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/cars",
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetAllCarsQuery } = carStoreApi;
+export const { useGetAllCarsQuery, useAddCarMutation } = carStoreApi;

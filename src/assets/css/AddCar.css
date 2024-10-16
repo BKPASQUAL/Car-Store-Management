@@ -1,0 +1,106 @@
+.addCar-main{
+    height: 100%;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+.addCar-con {
+    padding: 50px;
+}
+
+.addCar-top {
+    margin-left: 50px;
+    margin-bottom: 50px;
+}
+
+.addCar-mid {
+    margin-left: 50px;
+
+}
+
+.addCar-inputFields{
+    display: flex;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 30px;
+    justify-content: space-between;
+
+}
+
+.addCar-btm{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 50px;
+    margin-top: 30px;
+}
+
+.addCar-savebtm{
+    width: 130px;
+}
+
+.addCar-cancelbtm{
+    width: 130px;
+    margin-left: 20px;
+}
+
+.modal-backdrop.show.custom-backdrop {
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the darkness here */
+  }
+
+  .image-preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .image-preview-item {
+    position: relative;
+  }
+  
+  .preview-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+  }
+  
+  .remove-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+  }
+  .image-preview-grid {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto; /* Make the container scrollable horizontally */
+    max-width: 100%; /* Set a maximum width if needed */
+}
+
+.image-preview-item {
+    position: relative;
+    flex: 0 0 auto; /* Ensure items don't shrink */
+}
+
+.preview-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
