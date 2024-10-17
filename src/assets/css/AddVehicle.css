@@ -68,7 +68,7 @@ input,
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 20px;
 }
 
 .addvehicle-submit-btn {
@@ -86,7 +86,7 @@ input,
 }
 
 .addvehicle-submit-btn:hover {
-  transform: scale(1.01);
+  transform: scale(1.05);
 }
 
 .addvehicle-cancel-btn {
@@ -104,7 +104,7 @@ input,
 }
 
 .addvehicle-cancel-btn:hover {
-  transform: scale(1.01);
+  transform: scale(1.05);
 }
 
 .addveh-brand {

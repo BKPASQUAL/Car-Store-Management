@@ -3,7 +3,6 @@ import Navbar from "../components/common/Navbar";
 import "../assets/css/CarStore.css";
 import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
-import { Button } from "rsuite";
 import { InputPicker } from "rsuite";
 import CarStoreTable from "../components/tables/CarStoreTable";
 import { Outlet } from "react-router-dom";

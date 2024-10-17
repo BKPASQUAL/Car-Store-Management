@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import CarStore from "./pages/CarStore";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddCar from "./components/model/AddCar";
+import Vehicles from "./pages/Vehicles";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashbourd" element={<Dashboard />} />
           <Route path="carStore" element={<CarStore />} />
+          <Route path="brands" element={<Vehicles />} />
           <Route path="carStore/addCar" element={<AddCar />} />
         </Route>
       </Routes>
