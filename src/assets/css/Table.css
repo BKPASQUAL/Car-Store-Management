@@ -2,12 +2,12 @@
     margin: 3%;
     width: 94% !important;
     margin-top: 0;
-    /* text-align: center;  */
   }
   
   .product-table th, 
   .product-table td {
-    vertical-align: middle; /* Centers content vertically */
+    vertical-align: middle;   
+    text-align: center;
   }
   
   .table-fixed thead {
@@ -18,7 +18,7 @@
   }
 
   .table-icon {
-    color: blue !important; /* Makes the edit icon blue */
+    color: rgb(53, 53, 53) !important; /* Makes the edit icon blue */
     cursor: pointer; /* Changes the cursor to a pointer on hover */
   }
   
