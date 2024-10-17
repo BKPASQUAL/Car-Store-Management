@@ -1,0 +1,113 @@
+.addveh-title {
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Image Upload Section */
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.image-previews {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.image-preview {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-preview span {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  color: rgb(255, 0, 0);
+  background-color: white;
+  border-radius: 50%;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Input Fields Layout */
+.input-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+input,
+.MuiTextField-root {
+  width: 100%;
+}
+
+.swal-warning {
+    z-index: 5000000;
+}
+
+/* Form Actions (Buttons) */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.addvehicle-submit-btn {
+  margin-top: 20px;
+  width: 50%;
+  height: 50px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 20px;
+  background-color: #122620;
+  color: #f4ebd0;
+  border: black solid 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addvehicle-submit-btn:hover {
+  transform: scale(1.01);
+}
+
+.addvehicle-cancel-btn {
+  margin-top: 20px;
+  width: 50%;
+  height: 50px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 20px;
+  background-color: #f4ebd0;
+  color: #122620;
+  border: black solid 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addvehicle-cancel-btn:hover {
+  transform: scale(1.01);
+}
+
+.addveh-brand {
+    height: 56px;
+    margin-top: 15px !important;
+}

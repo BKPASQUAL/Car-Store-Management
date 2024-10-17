@@ -5,11 +5,35 @@
 .carStore-top{
     display: flex;
     justify-content: space-between;
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-bottom: 40px;
+    margin: 50px;
 }
+
 .addcar-crossicon {
     margin-right: 5px;
+}
+
+.carStore-right {
+    display: flex;
+    align-items: center;
+}
+
+.carStore-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    border: black solid 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carStore-add-btn:hover {
+    background-color: #122620;
+    color: #F4EBD0;
 }
 

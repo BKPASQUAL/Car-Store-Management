@@ -25,6 +25,8 @@ function AddCar() {
   const removeImage = (index) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
+
+  
   const onSubmit = async (data) => {
     const formData = new FormData();
 

@@ -8,15 +8,24 @@ import { InputPicker } from "rsuite";
 import CarStoreTable from "../components/tables/CarStoreTable";
 import { Outlet } from "react-router-dom";
 import AddCar from "../components/model/AddCar";
+import AddVehicle from "../components/model/AddVehicle";
 
 function CarStore() {
   const [isAddCarModalOpen, setIsAddCarModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const data = [
-    "Eugenia", "Bryan", "Linda", "Nancy", "Lloyd", "Alice", "Julia",
-    "Albert", "Louisa", "Lester", "Lola", "Lydia", "Hal", "Hannah",
-    "Harriet", "Hattie", "Hazel", "Hilda"
-  ].map((item) => ({ label: item, value: item }));
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const data = ["Eugenia", "Bryan"].map((item) => ({
+    label: item,
+    value: item,
+  }));
 
   const handleAddCar = () => {
     setIsAddCarModalOpen(true);
@@ -32,8 +41,8 @@ function CarStore() {
       <div className="carStore-main">
         <div className="carStore-top">
           <div className="carStore-left">
-            <InputGroup inside style={{ width: "500px" }} size="md">
-              <Input placeholder="Search By Car Name ..." />
+            <InputGroup inside style={{ width: "500px" }} size="lg">
+              <Input placeholder="Search Vehicles ..." />
               <InputGroup.Button>
                 <SearchIcon />
               </InputGroup.Button>
@@ -43,19 +52,21 @@ function CarStore() {
             <InputPicker
               data={data}
               style={{ width: 250, marginRight: "60px" }}
-              size="md"
+              size="lg"
+              placeholder="Select Brand"
             />
-            <Button
-              appearance="primary"
-              style={{ width: "150px" }}
-              size="md"
-              onClick={handleAddCar}
-            >
+            <button className="carStore-add-btn" onClick={handleAddCar}>
               <span className="material-symbols-outlined addcar-crossicon">
                 add
               </span>
               Add Car
-            </Button>
+            </button>
+            <button className="carStore-add-btn" onClick={handleOpenModal}>
+              <span className="material-symbols-outlined addcar-crossicon">
+                add
+              </span>
+              Add Vehicle
+            </button>
           </div>
         </div>
         <div className="carStore-btm">
@@ -96,6 +107,7 @@ function CarStore() {
           </div>
         </>
       )}
+      <AddVehicle open={isModalOpen} handleClose={handleCloseModal} />
     </>
   );
 }
