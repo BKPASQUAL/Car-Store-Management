@@ -2,27 +2,32 @@
   display: flex;
 }
 
-.sidebar-title {
-  color: #2c3d8f;
-  font-weight: 700;
-  font-size: 22px;
-  text-align: center;
-  margin-top: 40px;
-  margin-bottom: 65px;
+
+.sidebar-logo-con {
+ width: 100%;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ margin: 50px 0;
+}
+
+.sidebar-logo {
+ width: 70%;
+ /* background-color: rgb(44, 44, 44); */
 }
 
 .selected-menu-item {
   .ps-menu-label {
     font-weight: 500;
-    color: #5a81fa;
+    color: #B68D40;
   }
 
   .sidebar-icon {
-    color: #5a81fa;
+    color: #B68D40;
   }
 
   .ps-menu-button {
-    border-right: #5a81fa 3px solid;
+    border-right: #B68D40 3px solid;
   }
 }
 
@@ -83,10 +88,15 @@
   overflow: hidden;
 }
 
+/* .sidebar-logout p {
+  margin-bottom: 0;
+} */
+
 .sidebar-logout-icon {
   color: #000;
   font-weight: 600;
   margin-right: 15px;
+  margin-bottom: 16px;
 }
 
 .sidebar-logout::before {
@@ -96,7 +106,7 @@
   top: 0;
   height: 100%;
   width: 0;
-  background-color: #5a81fa;
+  background-color: #B68D40;
   transition: width 0.3s ease;
   z-index: 0;
 }

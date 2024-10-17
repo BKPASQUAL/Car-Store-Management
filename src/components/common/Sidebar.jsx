@@ -3,7 +3,7 @@ import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "../../assets/css/Sidebar.css";
 import { useNavigate } from "react-router-dom";
 // import LogoutModal from "../modals/Logout";
-import image from "../../assets/images/logo.png";
+import image from "../../assets/images/logo.webp";
 
 function SidebarComp() {
   const [collapsed, setCollapsed] = useState(false);
@@ -36,12 +36,8 @@ function SidebarComp() {
         className="sidebar"
       >
         <Menu>
-          {/* <p className="sidebar-title">
-            Weddings <br />
-            By Sonali
-          </p> */}
-          <div className="flex items-center justify-center pt-5">
-            <img src={image} alt="Your Image" className="login-image w-36 " />
+          <div className="sidebar-logo-con">
+            <img src={image} alt="Your Image" className="sidebar-logo" />
           </div>
 
           {/* <div
@@ -62,12 +58,12 @@ function SidebarComp() {
               }
               icon={
                 <span className="material-symbols-outlined sidebar-icon">
-                  home
+                  dashboard
                 </span>
               }
               onClick={() => handleMenuItemClick("dashbourd")}
             >
-              dashbourd
+              Dashboard
             </MenuItem>
           </div>
           <div className="sidebar-link">
@@ -77,7 +73,7 @@ function SidebarComp() {
               }
               icon={
                 <span className="material-symbols-outlined sidebar-icon">
-                  add_box
+                  garage
                 </span>
               }
               onClick={() => handleMenuItemClick("carStore")}
@@ -92,12 +88,12 @@ function SidebarComp() {
               }
               icon={
                 <span className="material-symbols-outlined sidebar-icon">
-                  event_note
+                  emoji_transportation
                 </span>
               }
               onClick={() => handleMenuItemClick("orders")}
             >
-              Waiting List
+              Brands
             </MenuItem>
           </div>
           <div className="sidebar-link">
@@ -107,27 +103,12 @@ function SidebarComp() {
               }
               icon={
                 <span className="material-symbols-outlined sidebar-icon">
-                  inventory_2
+                  mail
                 </span>
               }
               onClick={() => handleMenuItemClick("inventory")}
             >
-              Inventory
-            </MenuItem>
-          </div>
-          <div className="sidebar-link">
-            <MenuItem
-              className={
-                selectedMenuItem === "washList" ? "selected-menu-item" : ""
-              }
-              icon={
-                <span className="material-symbols-outlined sidebar-icon">
-                  local_laundry_service
-                </span>
-              }
-              onClick={() => handleMenuItemClick("washList")}
-            >
-              Washing List
+              Inquiries
             </MenuItem>
           </div>
           <div className="sidebar-link">
