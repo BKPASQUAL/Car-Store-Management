@@ -7,18 +7,14 @@ import { InputPicker } from "rsuite";
 import AddVehicle from "../components/model/AddVehicle";
 import Table from "react-bootstrap/Table";
 import "../assets/css/Table.css";
-import {
-  useDeleteCarMutation,
-  useGetAllCarsQuery,
-} from "../store/api/carStore";
-import cardummy from "../assets/images/cardummy.png";
-import Swal from "sweetalert2";
+import { useGetAllCarsQuery } from "../store/api/carStore";
+import dummy from "../assets/images/dummy.jpg";
+import AddUser from "../components/model/AddUser";
 
-function Vehicles() {
+function Users() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
-  const { data: carData, refetch: allVehiclesRefetch } = useGetAllCarsQuery();
-  const [deleteVehicle] = useDeleteCarMutation();
+  const { data: carData } = useGetAllCarsQuery();
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -29,10 +25,9 @@ function Vehicles() {
   };
 
   // Filtered car data based on search query (carName or brandName)
-  const filteredCars = carData?.payload?.filter(
-    (car) =>
-      car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCars = carData?.payload?.filter((car) =>
+    car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const data = ["Eugenia", "Bryan"].map((item) => ({
@@ -40,67 +35,16 @@ function Vehicles() {
     value: item,
   }));
 
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const response = await deleteVehicle(id);
-        console.log(response);
-        if (response?.data?.payload && !response?.data?.error) {
-          Swal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: response.payload,
-            showConfirmButton: false,
-            timer: 1000,
-          });
-          allVehiclesRefetch();
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Failed!",
-            text:
-              response?.error?.data?.payload ||
-              response?.data?.payload ||
-              "Something went wrong. Please try again.",
-          });
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Error Occurred",
-          text:
-            error.message ||
-            "Unable to delete vehicle. Please try again later.",
-        });
-      }
-    }
-  };
-
   return (
     <>
-      <Navbar
-        title={"Vehicles"}
-        icon={"garage"}
-        count={carData?.payload ? carData.payload.length : "00"}
-      />
+      <Navbar title={"Users"} icon={"group"}/>
       <div className="carStore-main">
         <div className="carStore-top">
           <div className="carStore-left">
             {/* Search Input */}
             <InputGroup inside style={{ width: "500px" }} size="lg">
               <Input
-                placeholder="Search Vehicles By Name or Brand ..."
+                placeholder="Search By User's Name ..."
                 value={searchQuery} // Bind input value to state
                 onChange={(value) => setSearchQuery(value)} // Update state on input
               />
@@ -110,17 +54,11 @@ function Vehicles() {
             </InputGroup>
           </div>
           <div className="carStore-right">
-            <InputPicker
-              data={data}
-              style={{ width: 250, marginRight: "60px" }}
-              size="lg"
-              placeholder="Select Brand"
-            />
             <button className="carStore-add-btn" onClick={handleOpenModal}>
               <span className="material-symbols-outlined addcar-crossicon">
                 add
               </span>
-              Add Vehicle
+              Add User
             </button>
           </div>
         </div>
@@ -129,12 +67,12 @@ function Vehicles() {
             <thead>
               <tr>
                 <th></th>
-                <th>Brand</th>
                 <th>Name</th>
-                <th>Year</th>
-                <th>Color</th>
-                <th>Engine</th>
-                <th>Price</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>DOB</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -144,7 +82,7 @@ function Vehicles() {
                 <tr key={car.id}>
                   <td style={{ width: "5%" }}>
                     <img
-                      src={car.CarPhotos?.[0] || cardummy}
+                      src={car.CarPhotos?.[0] || dummy}
                       alt={car.carName}
                       style={{
                         width: "40px",
@@ -159,8 +97,8 @@ function Vehicles() {
                   </td>
                   <td style={{ width: "15%" }}>{car.carName}</td>
                   <td style={{ width: "15%" }}>{car.manufacturingYear}</td>
-                  <td style={{ width: "15%" }}>{car.exteriorColour}</td>
-                  <td style={{ width: "15%" }}>{car.engine}</td>
+                  <td style={{ width: "15%" }}>{car.exteriorColor}</td>
+                  <td style={{ width: "15%" }}>{car.engineType}</td>
                   <td style={{ width: "15%" }}>{car.price}</td>
                   <td style={{ width: "10%" }} className="table-icon">
                     <span className="material-symbols-outlined">edit</span>
@@ -169,12 +107,7 @@ function Vehicles() {
                     style={{ width: "10%", marginRight: "10px" }}
                     className="table-icon-pen"
                   >
-                    <span
-                      className="material-symbols-outlined"
-                      onClick={() => handleDelete(car.id)}
-                    >
-                      delete
-                    </span>
+                    <span className="material-symbols-outlined">delete</span>
                   </td>
                 </tr>
               ))}
@@ -182,9 +115,9 @@ function Vehicles() {
           </Table>
         </div>
       </div>
-      <AddVehicle open={isModalOpen} handleClose={handleCloseModal} />
+      <AddUser open={isModalOpen} handleClose={handleCloseModal} />
     </>
   );
 }
 
-export default Vehicles;
+export default Users;
