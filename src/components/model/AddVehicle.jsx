@@ -51,6 +51,9 @@ const AddVehicle = ({ open, handleClose }) => {
         icon: "error",
         title: "Error...",
         text: "You can upload a maximum of 5 photos.",
+        customClass: {
+          container: "swal-warning",
+        },
       });
       return;
     }
@@ -264,14 +267,6 @@ const AddVehicle = ({ open, handleClose }) => {
 
           <div className="form-actions">
             <button
-              className="addvehicle-submit-btn"
-              type="submit"
-              sx={{ marginRight: 2 }}
-              //   disabled={selectedFiles.length === 0}
-            >
-              Save
-            </button>
-            <button
               className="addvehicle-cancel-btn"
               onClick={() => {
                 reset();
@@ -281,6 +276,14 @@ const AddVehicle = ({ open, handleClose }) => {
               }}
             >
               Cancel
+            </button>
+            <button
+              className="addvehicle-submit-btn"
+              type="submit"
+              sx={{ marginRight: 2 }}
+              //   disabled={selectedFiles.length === 0}
+            >
+              Save
             </button>
           </div>
         </form>
