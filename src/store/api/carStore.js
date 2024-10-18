@@ -17,7 +17,15 @@ export const carStoreApi = api.injectEndpoints({
         };
       },
     }),
+
+    deleteCar: builder.mutation({
+      query: (vehicleId) => ({
+        url: `cars/${vehicleId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllCarsQuery, useAddCarMutation } = carStoreApi;
+export const { useGetAllCarsQuery, useAddCarMutation, useDeleteCarMutation } =
+  carStoreApi;

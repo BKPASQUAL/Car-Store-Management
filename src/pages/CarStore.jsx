@@ -7,19 +7,9 @@ import { InputPicker } from "rsuite";
 import CarStoreTable from "../components/tables/CarStoreTable";
 import { Outlet } from "react-router-dom";
 import AddCar from "../components/model/AddCar";
-import AddVehicle from "../components/model/AddVehicle";
 
 function CarStore() {
   const [isAddCarModalOpen, setIsAddCarModalOpen] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
 
   const data = ["Eugenia", "Bryan"].map((item) => ({
     label: item,
@@ -59,12 +49,6 @@ function CarStore() {
                 add
               </span>
               Add Car
-            </button>
-            <button className="carStore-add-btn" onClick={handleOpenModal}>
-              <span className="material-symbols-outlined addcar-crossicon">
-                add
-              </span>
-              Add Vehicle
             </button>
           </div>
         </div>
@@ -106,7 +90,6 @@ function CarStore() {
           </div>
         </>
       )}
-      <AddVehicle open={isModalOpen} handleClose={handleCloseModal} />
     </>
   );
 }

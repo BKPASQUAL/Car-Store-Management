@@ -7,6 +7,8 @@ import CarStore from "./pages/CarStore";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddCar from "./components/model/AddCar";
 import Vehicles from "./pages/Vehicles";
+import Users from "./pages/Users";
+import Inquiries from "./pages/Inquiries";
 
 export default function App() {
   return (
@@ -18,7 +20,8 @@ export default function App() {
           <Route path="dashbourd" element={<Dashboard />} />
           <Route path="carStore" element={<CarStore />} />
           <Route path="brands" element={<Vehicles />} />
-          <Route path="carStore/addCar" element={<AddCar />} />
+          <Route path="users" element={<Users />} />
+          <Route path="inquiries" element={<Inquiries />} />
         </Route>
       </Routes>
     </div>

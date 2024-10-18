@@ -8,8 +8,20 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
+  .nav-left{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-left span {
+    font-size: 30px;
+    font-weight: 600;
+  }
+
   .nav-left h2 {
     margin: 0;
+    margin-left: 20px;
     font-family: 'Roboto', sans-serif;
     font-weight: 700;
     color: #122620;

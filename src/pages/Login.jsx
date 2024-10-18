@@ -1,5 +1,4 @@
 import React from "react";
-import { Checkbox } from "rsuite";
 import { Button } from "react-bootstrap";
 import "rsuite/dist/rsuite-no-reset.min.css";
 import "../assets/css/Login.css";
@@ -8,6 +7,7 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
 import { useLoginUserMutation } from "../store/api/authApi";
+import image from "../assets/images/logo.jpg";
 
 function Login() {
   const [loginUser, { isLoading, error }] = useLoginUserMutation();
@@ -59,6 +59,7 @@ function Login() {
   return (
     <div className="login-main">
       <form className="login-form" onSubmit={handleSubmit(handleLogin)}>
+        <img src={image} alt="Your Image" className="login-image" />
         <input
           type="text"
           className="login-name"
