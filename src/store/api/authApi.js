@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const authApi = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: "https://champikahardware.online/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://www.champikahardware.online/" }),
 
   reducerPath: "authApi",
   endpoints: (build) => ({
