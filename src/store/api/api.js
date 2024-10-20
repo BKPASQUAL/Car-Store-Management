@@ -1,21 +1,19 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-// Initialize an empty api service that we'll inject endpoints into later as needed
+// Initialize an API service with the correct baseUrl for the proxy
 export const api = createApi({
-    baseQuery: fetchBaseQuery({
-        baseUrl: 'http://3.104.75.209:4002/',
-        // baseUrl: 'http://44.208.32.102:3001/',
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api', // Proxy through Vite for development
 
-        prepareHeaders: (headers) => {
-            const accessToken = localStorage.getItem('accessToken'); 
-            // console.log("hello "+accessToken)         
-            if (accessToken) {
-                headers.set('Authorization', `Bearer ${accessToken}`)
-            }
-            return headers;
-        }
-    }),
-    endpoints: () => ({}),
+    prepareHeaders: (headers) => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        headers.set('Authorization', `Bearer ${accessToken}`);
+      }
+      return headers;
+    }
+  }),
+  endpoints: () => ({}),
 });
 
 export default api;
