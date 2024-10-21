@@ -18,6 +18,7 @@ import {
   useAddCarMutation,
   useGetAllCarsQuery,
   useGetCardataByIdQuery,
+  useUpdateCarMutation,
 } from "../../store/api/carStore";
 
 const style = {
@@ -37,11 +38,17 @@ const AddVehicle = ({ open, handleClose, carId }) => {
   const [brandId, setBrandId] = useState();
   const [addVehicle] = useAddCarMutation();
   const { refetch: allVehiclesRefetch } = useGetAllCarsQuery();
-  const { data: getCarDataById , isLoading } = useGetCardataByIdQuery(carId, {
+  const { data: getCarDataById, isLoading, refetch: carDataByIdrefetch } = useGetCardataByIdQuery(carId, {
     skip: !carId,
   });
+  const [updateCar] = useUpdateCarMutation();
 
-  // Effect to populate form when editing a vehicle
+  useEffect(() => {
+    if (open && carId) {
+      carDataByIdrefetch(); // Refetch the data when the modal opens
+    }
+  }, [open, carId, carDataByIdrefetch]);
+  
   useEffect(() => {
     if (getCarDataById?.payload && carId) {
       const carData = getCarDataById.payload;
@@ -61,8 +68,12 @@ const AddVehicle = ({ open, handleClose, carId }) => {
       setSelectedFiles(
         carData.CarPhotos?.map((url) => ({ url, isUploaded: true })) || []
       );
+    } else if (!carId) {
+      reset(); // Reset the form for a new vehicle
+      setSelectedFiles([]);
+      setBrandId("");
     }
-  }, [getCarDataById, carId, setValue]);
+  }, [getCarDataById, carId, setValue, reset]);
 
   const Toast = Swal.mixin({
     toast: true,
@@ -96,26 +107,41 @@ const AddVehicle = ({ open, handleClose, carId }) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append("brandId", brandId);
-    Object.entries(data).forEach(([key, value]) => formData.append(key, value));
-    selectedFiles.forEach(({ file }) => {
-      if (file) formData.append("CarPhotos", file);
-    });
+  const isUpdateCar = !!carId;
+  const isNewCar = !isUpdateCar;
 
+  const onSubmit = async (data) => {
     try {
       handleClose();
 
       Swal.fire({
-        title: "Adding Vehicle...",
+        title: isNewCar ? "Adding Vehicle..." : "Updating Vehicle...",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
         },
       });
 
-      const response = await addVehicle(formData).unwrap();
+      const formData = new FormData();
+      formData.append("brandId", brandId);
+      Object.entries(data).forEach(([key, value]) =>
+        formData.append(key, value)
+      );
+
+      // Include new images that were selected for upload
+      selectedFiles.forEach(({ file, url, isUploaded }) => {
+        if (!isUploaded && file) {
+          formData.append("CarPhotos", file);
+        }
+      });
+
+      let response;
+      if (isNewCar) {
+        response = await addVehicle(formData).unwrap();
+      } else {
+        // For updates, include carId and use the formData with the updateCar mutation
+        response = await updateCar({ id: carId, inputData: formData }).unwrap();
+      }
 
       if (response?.payload && !response?.error) {
         allVehiclesRefetch();
@@ -123,12 +149,19 @@ const AddVehicle = ({ open, handleClose, carId }) => {
         reset();
         setSelectedFiles([]);
         setBrandId("");
-        Toast.fire({ icon: "success", title: response.payload });
+        Toast.fire({
+          icon: "success",
+          title: isNewCar
+            ? "Vehicle added successfully!"
+            : "Vehicle updated successfully!",
+        });
       } else {
         Swal.close();
         Swal.fire({
           icon: "error",
-          title: "Failed to Add Vehicle",
+          title: isNewCar
+            ? "Failed to Add Vehicle"
+            : "Failed to Update Vehicle",
           text:
             response?.error?.data?.payload ||
             response?.data?.payload ||
@@ -143,7 +176,9 @@ const AddVehicle = ({ open, handleClose, carId }) => {
       Swal.fire({
         icon: "error",
         title: "Error Occurred",
-        text: "Unable to add vehicle. Please try again later.",
+        text: isNewCar
+          ? "Unable to add vehicle. Please try again later."
+          : "Unable to update vehicle. Please try again later.",
       });
     }
   };
@@ -151,167 +186,172 @@ const AddVehicle = ({ open, handleClose, carId }) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <h2 className="addveh-title">Add New Vehicle</h2>
+        <h2 className="addveh-title">{isUpdateCar ? "Edit Vehicle" : "Add New Vehicle"}</h2>
         <hr />
-        {isLoading ? ( // Show loading indicator when loading
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        {isLoading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
             <CircularProgress />
           </div>
         ) : (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="image-upload">
-            <Button
-              variant="outlined"
-              component="label"
-              startIcon={<CameraRetroIcon />}
-            >
-              Upload Photos
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                hidden
-                onChange={handleImageUpload}
-              />
-            </Button>
-            <div className="image-previews">
-              {selectedFiles.map((fileData, index) => (
-                <div key={index} className="image-preview">
-                  <img
-                    src={
-                      fileData.isUploaded
-                        ? fileData.url
-                        : URL.createObjectURL(fileData.file)
-                    }
-                    alt={`Preview ${index + 1}`}
-                    className="preview-img"
-                  />
-                  <span
-                    className="material-symbols-outlined"
-                    onClick={() => removeImage(index)}
-                  >
-                    delete
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="input-fields">
-            <FormControl fullWidth className="addveh-brand">
-              <InputLabel>Brand</InputLabel>
-              <Select
-                value={brandId}
-                onChange={(e) => setBrandId(e.target.value)}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="image-upload">
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<CameraRetroIcon />}
               >
-                <MenuItem value={1}>Toyota</MenuItem>
-                <MenuItem value={2}>Honda</MenuItem>
-                <MenuItem value={3}>Ford</MenuItem>
-              </Select>
-            </FormControl>
-
-            {/* Input fields for vehicle details */}
-            <Controller
-              name="carName"
-              control={control}
-              rules={{ required: "Vehicle name is required" }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  label="Vehicle Name"
-                  fullWidth
-                  margin="normal"
-                  error={!!fieldState.error}
-                  helperText={fieldState.error?.message}
+                Upload Photos
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  hidden
+                  onChange={handleImageUpload}
                 />
-              )}
-            />
+              </Button>
+              <div className="image-previews">
+                {selectedFiles.map((fileData, index) => (
+                  <div key={index} className="image-preview">
+                    <img
+                      src={
+                        fileData.isUploaded
+                          ? fileData.url
+                          : URL.createObjectURL(fileData.file)
+                      }
+                      alt={`Preview ${index + 1}`}
+                      className="preview-img"
+                    />
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => removeImage(index)}
+                    >
+                      delete
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            <TextField
-              {...register("manufacturingYear")}
-              label="Manufacturing Year"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., 2023"
-            />
+            <div className="input-fields">
+              <FormControl fullWidth className="addveh-brand">
+                <InputLabel>Brand</InputLabel>
+                <Select
+                  value={brandId || ""}
+                  onChange={(e) => setBrandId(e.target.value)}
+                >
+                  <MenuItem value={1}>Toyota</MenuItem>
+                  <MenuItem value={2}>Honda</MenuItem>
+                  <MenuItem value={3}>Ford</MenuItem>
+                </Select>
+              </FormControl>
 
-            <TextField
-              {...register("exteriorColour")}
-              label="Colour"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., Black"
-            />
-
-            <TextField
-              {...register("engine")}
-              label="Engine Type"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., V8"
-            />
-
-            <TextField
-              {...register("bodyType")}
-              label="Body Type"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., Sedan, SUV"
-            />
-
-            <TextField
-              {...register("transmission")}
-              label="Transmission"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., Automatic"
-            />
-
-            <TextField
-              {...register("fuelType")}
-              label="Fuel Type"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., Diesel"
-            />
-
-            <TextField
-              {...register("driverPosition")}
-              label="Driver Position"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., Left-Hand Drive"
-            />
-
-            <TextField
-              {...register("price")}
-              label="Price"
-              type="number"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., 50000"
-            />
-          </div>
-
-          <div className="form-actions">
-            <button
-              className="addvehicle-cancel-btn"
-              onClick={() => {
-                reset();
-                setBrandId("");
-                setSelectedFiles([]);
-                handleClose();
-              }}
-            >
-              Cancel
-            </button>
-            <button className="addvehicle-submit-btn" type="submit">
-              Save
-            </button>
-          </div>
-        </form>
+              <Controller
+                name="carName"
+                control={control}
+                rules={{ required: "Vehicle name is required" }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    label="Vehicle Name"
+                    fullWidth
+                    margin="normal"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                  />
                 )}
+              />
 
+              <TextField
+                {...register("manufacturingYear")}
+                label="Manufacturing Year"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., 2023"
+              />
+
+              <TextField
+                {...register("exteriorColour")}
+                label="Colour"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., Black"
+              />
+
+              <TextField
+                {...register("engine")}
+                label="Engine Type"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., V8"
+              />
+
+              <TextField
+                {...register("bodyType")}
+                label="Body Type"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., Sedan, SUV"
+              />
+
+              <TextField
+                {...register("transmission")}
+                label="Transmission"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., Automatic"
+              />
+
+              <TextField
+                {...register("fuelType")}
+                label="Fuel Type"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., Diesel"
+              />
+
+              <TextField
+                {...register("driverPosition")}
+                label="Driver Position"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., Left-Hand Drive"
+              />
+
+              <TextField
+                {...register("price")}
+                label="Price"
+                type="number"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., 50000"
+              />
+            </div>
+
+            <div className="form-actions">
+              <button
+                className="addvehicle-cancel-btn"
+                onClick={() => {
+                  reset();
+                  setBrandId("");
+                  setSelectedFiles([]);
+                  handleClose();
+                }}
+              >
+                Cancel
+              </button>
+              <button className="addvehicle-submit-btn" type="submit">
+                Save
+              </button>
+            </div>
+          </form>
+        )}
       </Box>
     </Modal>
   );

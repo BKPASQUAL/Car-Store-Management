@@ -30,6 +30,16 @@ export const carStoreApi = api.injectEndpoints({
       query: (vehicleId) => `cars/${vehicleId}`,
     }),
     
+    updateCar: builder.mutation({
+      query: ({ id, inputData }) => {
+        console.log("Data before making API call:", id, inputData);
+        return {
+          url: `cars/${id}`,
+          method: "PATCH",
+          body: inputData,
+        };
+      },
+    })
   }),
 });
 
@@ -38,4 +48,5 @@ export const {
   useAddCarMutation,
   useDeleteCarMutation,
   useGetCardataByIdQuery,
+  useUpdateCarMutation,
 } = carStoreApi;

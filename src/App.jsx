@@ -20,7 +20,7 @@ export default function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashbourd" element={<Dashboard />} />
           <Route path="carStore" element={<CarStore />} />
-          <Route path="brands" element={<Vehicles />} />
+          <Route path="vehical" element={<Vehicles />} />
           <Route path="users" element={<Users />} />
           <Route path="inquiries" element={<Inquiries />} />
         </Route>

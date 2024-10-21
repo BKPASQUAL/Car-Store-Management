@@ -13,6 +13,7 @@ import {
 } from "../store/api/carStore";
 import cardummy from "../assets/images/cardummy.png";
 import Swal from "sweetalert2";
+import { useGetAllBrandsQuery } from "../store/api/brands";
 
 function Vehicles() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -20,6 +21,8 @@ function Vehicles() {
   const [selectedCarId, setSelectedCarId] = useState(null); // Declare selectedCarId state
   const { data: carData, refetch: allVehiclesRefetch } = useGetAllCarsQuery();
   const [deleteVehicle] = useDeleteCarMutation();
+  const { data:getAllBrands } = useGetAllBrandsQuery();
+  console.log("getAllBrands",getAllBrands)
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -151,7 +154,7 @@ function Vehicles() {
                 <tr key={car.id}>
                   <td style={{ width: "5%" }}>
                     <img
-                      src={car.CarPhotos?.[0] || cardummy}
+                      src={car.brandImage || cardummy}
                       alt={car.carName}
                       style={{
                         width: "40px",
