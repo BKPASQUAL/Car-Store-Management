@@ -138,7 +138,7 @@ function Vehicles() {
             </button>
           </div>
         </div>
-        <div style={{ maxHeight: "650px", overflowY: "auto", width: "auto" }}>
+        <div style={{ maxHeight: "640px", overflowY: "auto", width: "auto" }}>
           <Table striped hover className="product-table text-left table-fixed">
             <thead>
               <tr>
@@ -168,15 +168,15 @@ function Vehicles() {
                       }}
                     />
                   </td>
-                  <td style={{ width: "15%" }} className="carStore-table">
+                  <td style={{ width: "10%" }} className="carStore-table">
                     {car.brandName}
                   </td>
-                  <td style={{ width: "15%" }}>{car.carName}</td>
-                  <td style={{ width: "15%" }}>{car.manufacturingYear}</td>
-                  <td style={{ width: "15%" }}>{car.exteriorColour}</td>
-                  <td style={{ width: "15%" }}>{car.engine}</td>
-                  <td style={{ width: "15%" }}>{car.price}</td>
-                  <td style={{ width: "10%" }} className="table-icon">
+                  <td style={{ width: "16%" }}>{car.carName}</td>
+                  <td style={{ width: "16%" }}>{car.manufacturingYear}</td>
+                  <td style={{ width: "16%" }}>{car.exteriorColour}</td>
+                  <td style={{ width: "16%" }}>{car.engine}</td>
+                  <td style={{ width: "16%" }}>{car.price}</td>
+                  <td style={{ width: "12%" }} className="table-icon">
                     <span
                       className="material-symbols-outlined"
                       onClick={() => handleUpdate(car.id)} 

@@ -63,7 +63,6 @@ const Inquiries = () => {
                     <span className="material-symbols-outlined">location_on</span>
                     {inquiry.location}
                   </div>
-                  {/* Remove preferredContactMethod if not needed */}
                 </div>
               </div>
             </div>

@@ -5,9 +5,8 @@ export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     addUser: builder.mutation({
       query: (data) => {
-        console.log("Data before making API call:", data);
         return {
-          url: "users/registerUser",
+          url: "users/register",
           method: "POST",
           body: data,
         };
@@ -15,26 +14,26 @@ export const userApi = api.injectEndpoints({
     }),
 
     getUserRoles: builder.query({
-      query: () => "users/getUserRoles",
+      query: () => "user/getUserRoles",
     }),
 
     getAllUsers: builder.query({
-      query: () => "/item/getAllItems",
+      query: () => "/users",
     }),
 
     getSignedUser: builder.query({
-      query: () => "users/getSignedUser",
+      query: () => "user/getSignedUser",
     }),
 
     deleteUser: builder.mutation({
       query: (userId) => ({
-        url: `users/deleteUser/${userId}`,
+        url: `user/deleteUser/${userId}`,
         method: "DELETE",
       }),
     }),
 
     getUserByID: builder.query({
-      query: (id) => `users/getUserById/${id}`,
+      query: (id) => `user/getUserById/${id}`,
     }),
 
 
@@ -42,7 +41,7 @@ export const userApi = api.injectEndpoints({
       query: ({ id, inputData }) => {
         console.log("Data before making API call:", id, inputData);
         return {
-          url: `users/updateUser/${id}`,
+          url: `user/updateUser/${id}`,
           method: "PATCH",
           body: inputData,
         };
