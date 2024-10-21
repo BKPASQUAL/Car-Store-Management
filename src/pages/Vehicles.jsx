@@ -17,12 +17,12 @@ import { useGetAllBrandsQuery } from "../store/api/brands";
 
 function Vehicles() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
-  const [selectedCarId, setSelectedCarId] = useState(null); // Declare selectedCarId state
-  const [selectedBrand, setSelectedBrand] = useState(null); // State for selected brand
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const [selectedCarId, setSelectedCarId] = useState(null); 
+  const [selectedBrand, setSelectedBrand] = useState(null); 
   const { data: carData, refetch: allVehiclesRefetch } = useGetAllCarsQuery();
   const [deleteVehicle] = useDeleteCarMutation();
-  const { data: getAllBrands } = useGetAllBrandsQuery(); // Fetch all brands
+  const { data: getAllBrands } = useGetAllBrandsQuery(); 
 
   console.log(getAllBrands)
   const handleOpenModal = () => {
@@ -40,18 +40,16 @@ function Vehicles() {
     setSelectedCarId(null); 
   };
 
-  // Filter cars by search query and selected brand
   const filteredCars = carData?.payload?.filter(
     (car) =>
       (car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (selectedBrand ? car.brandId === selectedBrand : true) // Filter by brand if selected
+      (selectedBrand ? car.brandId === selectedBrand : true) 
   );
 
-  // Map the brands data for the InputPicker
   const brandOptions = getAllBrands?.payload?.map((brand) => ({
-    label: brand.brandName, // Assuming the brand object has a 'name' field
-    value: brand.id,   // Assuming the brand object has an 'id' field
+    label: brand.brandName, 
+    value: brand.id,   
   })) || [];
 
   const handleDelete = async (id) => {
@@ -115,8 +113,8 @@ function Vehicles() {
             <InputGroup inside style={{ width: "500px" }} size="lg">
               <Input
                 placeholder="Search Vehicles By Name or Brand ..."
-                value={searchQuery} // Bind input value to state
-                onChange={(value) => setSearchQuery(value)} // Update state on input
+                value={searchQuery} 
+                onChange={(value) => setSearchQuery(value)} 
               />
               <InputGroup.Button>
                 <SearchIcon />
@@ -129,7 +127,7 @@ function Vehicles() {
               style={{ width: 250, marginRight: "60px" }}
               size="lg"
               placeholder="Select Brand"
-              onChange={(value) => setSelectedBrand(value)} // Update state when a brand is selected
+              onChange={(value) => setSelectedBrand(value)} 
               value={selectedBrand}
             />
             <button className="carStore-add-btn" onClick={handleOpenModal}>
@@ -181,7 +179,7 @@ function Vehicles() {
                   <td style={{ width: "10%" }} className="table-icon">
                     <span
                       className="material-symbols-outlined"
-                      onClick={() => handleUpdate(car.id)} // Pass car ID when editing
+                      onClick={() => handleUpdate(car.id)} 
                     >
                       edit
                     </span>
@@ -206,7 +204,7 @@ function Vehicles() {
       <AddVehicle
         open={isModalOpen}
         handleClose={handleCloseModal}
-        carId={selectedCarId} // Pass selectedCarId to the AddVehicle component
+        carId={selectedCarId} 
       />
     </>
   );

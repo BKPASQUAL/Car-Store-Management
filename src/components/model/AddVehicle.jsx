@@ -20,6 +20,7 @@ import {
   useGetCardataByIdQuery,
   useUpdateCarMutation,
 } from "../../store/api/carStore";
+import { useGetAllBrandsQuery } from "../../store/api/brands";
 
 const style = {
   position: "absolute",
@@ -38,17 +39,22 @@ const AddVehicle = ({ open, handleClose, carId }) => {
   const [brandId, setBrandId] = useState();
   const [addVehicle] = useAddCarMutation();
   const { refetch: allVehiclesRefetch } = useGetAllCarsQuery();
-  const { data: getCarDataById, isLoading, refetch: carDataByIdrefetch } = useGetCardataByIdQuery(carId, {
+  const {
+    data: getCarDataById,
+    isLoading,
+    refetch: carDataByIdrefetch,
+  } = useGetCardataByIdQuery(carId, {
     skip: !carId,
   });
   const [updateCar] = useUpdateCarMutation();
+  const { data: brandData } = useGetAllBrandsQuery();
 
   useEffect(() => {
     if (open && carId) {
       carDataByIdrefetch(); // Refetch the data when the modal opens
     }
   }, [open, carId, carDataByIdrefetch]);
-  
+
   useEffect(() => {
     if (getCarDataById?.payload && carId) {
       const carData = getCarDataById.payload;
@@ -186,7 +192,9 @@ const AddVehicle = ({ open, handleClose, carId }) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <h2 className="addveh-title">{isUpdateCar ? "Edit Vehicle" : "Add New Vehicle"}</h2>
+        <h2 className="addveh-title">
+          {isUpdateCar ? "Edit Vehicle" : "Add New Vehicle"}
+        </h2>
         <hr />
         {isLoading ? (
           <div
@@ -246,9 +254,11 @@ const AddVehicle = ({ open, handleClose, carId }) => {
                   value={brandId || ""}
                   onChange={(e) => setBrandId(e.target.value)}
                 >
-                  <MenuItem value={1}>Toyota</MenuItem>
-                  <MenuItem value={2}>Honda</MenuItem>
-                  <MenuItem value={3}>Ford</MenuItem>
+                  {brandData?.payload?.map((brand) => (
+                    <MenuItem key={brand.id} value={brand.id}>
+                      {brand.brandName}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
 
