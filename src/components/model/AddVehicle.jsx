@@ -13,7 +13,10 @@ import { useForm, Controller } from "react-hook-form";
 import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 import Swal from "sweetalert2";
 import "../../assets/css/AddVehicle.css";
-import { useAddCarMutation } from "../../store/api/carStore";
+import {
+  useAddCarMutation,
+  useGetAllCarsQuery,
+} from "../../store/api/carStore";
 
 const style = {
   position: "absolute",
@@ -31,6 +34,7 @@ const AddVehicle = ({ open, handleClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [brandId, setBrandId] = useState();
   const [addVehicle] = useAddCarMutation();
+  const { refetch: allVehiclesRefetch } = useGetAllCarsQuery();
 
   const Toast = Swal.mixin({
     toast: true,
@@ -65,7 +69,6 @@ const AddVehicle = ({ open, handleClose }) => {
   };
 
   const onSubmit = async (data) => {
-    console.log("data:", data);
     const formData = new FormData();
     formData.append("brandId", brandId);
     // Object.entries(data).forEach(([key, value]) => formData.append(key, value));
@@ -76,7 +79,6 @@ const AddVehicle = ({ open, handleClose }) => {
 
     try {
       handleClose();
-      console.log("formData:", formData);
 
       // Show loading indicator while making the API call
       Swal.fire({
@@ -89,10 +91,10 @@ const AddVehicle = ({ open, handleClose }) => {
 
       // Make API call to add vehicle
       const response = await addVehicle(formData).unwrap();
-      console.log("API Response:", response);
 
       if (response?.payload && !response?.error) {
         // Show success message and reset the form if no error
+        allVehiclesRefetch();
         Swal.close();
         reset();
         setSelectedFiles([]);
@@ -208,8 +210,8 @@ const AddVehicle = ({ open, handleClose }) => {
             />
 
             <TextField
-              {...register("interiorColour")}
-              label="Interior Colour"
+              {...register("exteriorColour")}
+              label="Colour"
               fullWidth
               margin="normal"
               placeholder="e.g., Black"
