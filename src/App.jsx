@@ -5,11 +5,9 @@ import Home from "./components/common/Home";
 import Dashboard from "./pages/Dashboard";
 import CarStore from "./pages/CarStore";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AddCar from "./components/model/AddCar";
 import Vehicles from "./pages/Vehicles";
 import Users from "./pages/Users";
 import Inquiries from "./pages/Inquiries";
-import AddVehicle from "./components/model/AddVehicle";
 
 export default function App() {
   return (
