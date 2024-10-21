@@ -24,6 +24,12 @@ export const carStoreApi = api.injectEndpoints({
         method: "DELETE",
       }),
     }),
+
+    getCardataById:builder.query({
+      query:builder.query({
+        query:(vehicleId) => `cars/${vehicleId}`
+      })
+    })
   }),
 });
 
