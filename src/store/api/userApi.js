@@ -27,7 +27,7 @@ export const userApi = api.injectEndpoints({
 
     deleteUser: builder.mutation({
       query: (userId) => ({
-        url: `user/deleteUser/${userId}`,
+        url: `users/${userId}`,
         method: "DELETE",
       }),
     }),

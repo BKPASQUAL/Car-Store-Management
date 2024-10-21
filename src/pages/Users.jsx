@@ -7,13 +7,16 @@ import Table from "react-bootstrap/Table";
 import "../assets/css/Table.css";
 import dummy from "../assets/images/dummy.jpg";
 import AddUser from "../components/model/AddUser";
-import { useGetAllUsersQuery } from "../store/api/userApi";
+import { useDeleteUserMutation, useGetAllUsersQuery } from "../store/api/userApi";
+import Swal from "sweetalert2";
+
 
 function Users() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: userData } = useGetAllUsersQuery();
+  const { data: userData , refetch:allUsersRefetch} = useGetAllUsersQuery();
+  const [deleteUser] = useDeleteUserMutation();
 
   const handleOpenModal = () => {
     setSelectedUserId(null); // Reset user ID when adding a new user
@@ -36,7 +39,52 @@ function Users() {
       user?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user?.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
 
+    if (result.isConfirmed) {
+      try {
+        const response = await deleteUser(id);
+        console.log(response);
+        if (response?.data?.payload && !response?.data?.error) {
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: response.payload,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+          allUsersRefetch();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Failed!",
+            text:
+              response?.error?.data?.payload ||
+              response?.data?.payload ||
+              "Something went wrong. Please try again.",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error Occurred",
+          text:
+            error.message ||
+            "Unable to delete vehicle. Please try again later.",
+        });
+      }
+    }
+  };
   return (
     <>
       <Navbar
@@ -117,7 +165,12 @@ function Users() {
                     style={{ width: "10%", marginRight: "10px" }}
                     className="table-icon-pen"
                   >
-                    <span className="material-symbols-outlined">delete</span>
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => handleDelete(user.id)}
+                    >
+                      delete
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -125,7 +178,11 @@ function Users() {
           </Table>
         </div>
       </div>
-      <AddUser open={isModalOpen} handleClose={handleCloseModal} userId={selectedUserId} />
+      <AddUser
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+        userId={selectedUserId}
+      />
     </>
   );
 }
