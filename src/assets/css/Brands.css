@@ -1,0 +1,90 @@
+.brands-con {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.brands-top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 20px 20px;
+    border-radius: 10px;
+}
+
+.brand-btn:hover {
+  background-color: #a3702f;
+  transform: translateY(-2px);
+}
+
+.brand-card-con {
+  margin-top: 80px;
+  display: flex;
+  width: 90%;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.brand-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 250px;
+  height: 250px;
+  background-color: white;
+  border: 1px solid #b68d40;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.brand-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.brand-card-img {
+  max-width: 150px;
+  max-height: 150px;
+  border-bottom: 1px solid #b68d40;
+  padding: 10px;
+}
+
+.brand-card p {
+  margin: 10px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .brand-card:hover .card-actions {
+    opacity: 1;
+  }
+  
+  .edit-icon {
+    font-size: 22px;
+    cursor: pointer;
+    color: #4c66af;
+  }
+  
+  .delete-icon {
+    font-size: 22px;
+    cursor: pointer;
+    color: #f44336;
+  }

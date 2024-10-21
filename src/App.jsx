@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Vehicles from "./pages/Vehicles";
 import Users from "./pages/Users";
 import Inquiries from "./pages/Inquiries";
+import Brands from "./pages/Brands";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="dashbourd" element={<Dashboard />} />
           <Route path="carStore" element={<CarStore />} />
           <Route path="vehical" element={<Vehicles />} />
+          <Route path="brands" element={<Brands />} />
           <Route path="users" element={<Users />} />
           <Route path="inquiries" element={<Inquiries />} />
         </Route>

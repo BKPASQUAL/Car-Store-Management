@@ -8,7 +8,7 @@ function Navbar({ title, icon, count }) {
         <div className="nav-left">
           <span className="material-symbols-outlined">{icon}</span>
           <h2>
-            {title} | {count ?? "00"}
+            {title} {count !== undefined ? `| ${count.toString().padStart(2, "0")}` : ""}
           </h2>
         </div>
         <div className="nav-right">
