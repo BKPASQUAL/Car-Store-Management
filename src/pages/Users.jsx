@@ -3,18 +3,16 @@ import Navbar from "../components/common/Navbar";
 import "../assets/css/CarStore.css";
 import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
-import { InputPicker } from "rsuite";
-import AddVehicle from "../components/model/AddVehicle";
 import Table from "react-bootstrap/Table";
 import "../assets/css/Table.css";
-import { useGetAllCarsQuery } from "../store/api/carStore";
 import dummy from "../assets/images/dummy.jpg";
 import AddUser from "../components/model/AddUser";
+import { useGetAllUsersQuery } from "../store/api/userApi";
 
 function Users() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
-  const { data: carData } = useGetAllCarsQuery();
+  const { data: userData } = useGetAllUsersQuery();
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -24,20 +22,20 @@ function Users() {
     setModalOpen(false);
   };
 
-  // Filtered car data based on search query (carName or brandName)
-  const filteredCars = carData?.payload?.filter((car) =>
-    car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())
+  // Filter user data based on search query (firstName or lastName)
+  const filteredUsers = userData?.payload?.filter(
+    (user) =>
+      user?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user?.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const data = ["Eugenia", "Bryan"].map((item) => ({
-    label: item,
-    value: item,
-  }));
 
   return (
     <>
-      <Navbar title={"Users"} icon={"group"}/>
+      <Navbar
+        title={"Users"}
+        icon={"group"}
+        count={userData?.payload ? userData.payload.length : "00"}
+      />
       <div className="carStore-main">
         <div className="carStore-top">
           <div className="carStore-left">
@@ -72,18 +70,18 @@ function Users() {
                 <th>Email</th>
                 <th>Contact</th>
                 <th>Address</th>
-                <th>DOB</th>
+                <th>Gender</th>
                 <th></th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {filteredCars?.map((car, index) => (
-                <tr key={car.id}>
+              {filteredUsers?.map((user, index) => (
+                <tr key={user.id}>
                   <td style={{ width: "5%" }}>
                     <img
-                      src={car.CarPhotos?.[0] || dummy}
-                      alt={car.carName}
+                      src={user.image || dummy}
+                      alt={`${user.firstName} ${user.lastName}`}
                       style={{
                         width: "40px",
                         height: "40px",
@@ -93,13 +91,13 @@ function Users() {
                     />
                   </td>
                   <td style={{ width: "15%" }} className="carStore-table">
-                    {car.brandName}
+                    {user.firstName} {user.lastName}
                   </td>
-                  <td style={{ width: "15%" }}>{car.carName}</td>
-                  <td style={{ width: "15%" }}>{car.manufacturingYear}</td>
-                  <td style={{ width: "15%" }}>{car.exteriorColor}</td>
-                  <td style={{ width: "15%" }}>{car.engineType}</td>
-                  <td style={{ width: "15%" }}>{car.price}</td>
+                  <td style={{ width: "15%" }}>{user.role?.role}</td>
+                  <td style={{ width: "15%" }}>{user.email}</td>
+                  <td style={{ width: "15%" }}>{user.contactNo}</td>
+                  <td style={{ width: "15%" }}>{user.address}</td>
+                  <td style={{ width: "15%" }}>{user.gender}</td>
                   <td style={{ width: "10%" }} className="table-icon">
                     <span className="material-symbols-outlined">edit</span>
                   </td>

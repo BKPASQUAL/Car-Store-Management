@@ -5,9 +5,8 @@ export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     addUser: builder.mutation({
       query: (data) => {
-        console.log("Data before making API call:", data);
         return {
-          url: "user/registerUser",
+          url: "users/register",
           method: "POST",
           body: data,
         };
@@ -19,7 +18,7 @@ export const userApi = api.injectEndpoints({
     }),
 
     getAllUsers: builder.query({
-      query: () => "/item/getAllItems",
+      query: () => "/users",
     }),
 
     getSignedUser: builder.query({
