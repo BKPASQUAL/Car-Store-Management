@@ -22,8 +22,9 @@
 }
 
 .brand-card-con {
-  margin-top: 80px;
-  display: flex;
+  margin: 80px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   width: 90%;
   align-items: center;
   justify-content: space-around;
@@ -42,6 +43,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: all 0.3s ease;
+  margin: 30px 0;
 }
 
 .brand-card:hover {
@@ -53,7 +55,7 @@
   max-width: 150px;
   max-height: 150px;
   border-bottom: 1px solid #b68d40;
-  padding: 10px;
+  padding: 20px 0;
 }
 
 .brand-card p {

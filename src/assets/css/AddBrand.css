@@ -1,0 +1,22 @@
+
+.logo-preview {
+  position: relative;
+  width: 250px;
+  /* height: 200px; */
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  margin-top: 20px;
+}
+
+.logo-preview span {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  color: rgb(255, 0, 0);
+  background-color: white;
+  border-radius: 50%;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+}

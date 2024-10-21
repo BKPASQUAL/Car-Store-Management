@@ -4,10 +4,12 @@ import "../assets/css/Brands.css";
 import { useGetAllBrandsQuery } from "../store/api/brands";
 import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
+import AddBrand from "../components/model/AddBrand"; // Import the modal
 
 export default function Brands() {
-  const { data: brandData } = useGetAllBrandsQuery();
+  const { data: brandData } = useGetAllBrandsQuery(); 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -17,9 +19,13 @@ export default function Brands() {
     setModalOpen(false);
   };
 
+  const filteredBrands = brandData?.payload.filter((brand) =>
+    brand.brandName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
-      <Navbar title={"Brands"} icon={"emoji_transportation"} count={"00"} />
+      <Navbar title={"Brands"} icon={"emoji_transportation"} count={brandData?.payload?.length} />
 
       <div className="brands-con">
         <div className="brands-top">
@@ -27,7 +33,7 @@ export default function Brands() {
             <InputGroup inside style={{ width: "500px" }} size="lg">
               <Input
                 placeholder="Search Brands ..."
-                // value={searchQuery}
+                value={searchQuery}
                 onChange={(value) => setSearchQuery(value)}
               />
               <InputGroup.Button>
@@ -44,8 +50,9 @@ export default function Brands() {
             </button>
           </div>
         </div>
+
         <div className="brand-card-con">
-          {brandData?.payload.map((brand) => (
+          {filteredBrands?.map((brand) => (
             <div key={brand.id} className="brand-card">
               <img
                 className="brand-card-img"
@@ -65,6 +72,12 @@ export default function Brands() {
           ))}
         </div>
       </div>
+
+      {/* AddBrand modal invocation with props */}
+      <AddBrand
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+      />
     </>
   );
 }

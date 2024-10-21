@@ -7,7 +7,17 @@ export const brandApi = api.injectEndpoints({
     getAllBrands: builder.query({
       query: () => "/brands",
     }),
+
+    addBrand: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/brands",
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetAllBrandsQuery } = brandApi;
+export const { useGetAllBrandsQuery, useAddBrandMutation } = brandApi;
