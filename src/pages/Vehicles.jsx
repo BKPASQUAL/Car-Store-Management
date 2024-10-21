@@ -19,11 +19,12 @@ function Vehicles() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const [selectedCarId, setSelectedCarId] = useState(null); // Declare selectedCarId state
+  const [selectedBrand, setSelectedBrand] = useState(null); // State for selected brand
   const { data: carData, refetch: allVehiclesRefetch } = useGetAllCarsQuery();
   const [deleteVehicle] = useDeleteCarMutation();
-  const { data:getAllBrands } = useGetAllBrandsQuery();
-  console.log("getAllBrands",getAllBrands)
+  const { data: getAllBrands } = useGetAllBrandsQuery(); // Fetch all brands
 
+  console.log(getAllBrands)
   const handleOpenModal = () => {
     setModalOpen(true);
   };
@@ -39,16 +40,19 @@ function Vehicles() {
     setSelectedCarId(null); 
   };
 
-   const filteredCars = carData?.payload?.filter(
+  // Filter cars by search query and selected brand
+  const filteredCars = carData?.payload?.filter(
     (car) =>
-      car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())
+      (car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (selectedBrand ? car.brandId === selectedBrand : true) // Filter by brand if selected
   );
 
-  const data = ["Eugenia", "Bryan"].map((item) => ({
-    label: item,
-    value: item,
-  }));
+  // Map the brands data for the InputPicker
+  const brandOptions = getAllBrands?.payload?.map((brand) => ({
+    label: brand.brandName, // Assuming the brand object has a 'name' field
+    value: brand.id,   // Assuming the brand object has an 'id' field
+  })) || [];
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -121,10 +125,12 @@ function Vehicles() {
           </div>
           <div className="carStore-right">
             <InputPicker
-              data={data}
+              data={brandOptions}
               style={{ width: 250, marginRight: "60px" }}
               size="lg"
               placeholder="Select Brand"
+              onChange={(value) => setSelectedBrand(value)} // Update state when a brand is selected
+              value={selectedBrand}
             />
             <button className="carStore-add-btn" onClick={handleOpenModal}>
               <span className="material-symbols-outlined addcar-crossicon">
