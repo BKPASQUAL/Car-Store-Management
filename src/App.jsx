@@ -9,6 +9,7 @@ import AddCar from "./components/model/AddCar";
 import Vehicles from "./pages/Vehicles";
 import Users from "./pages/Users";
 import Inquiries from "./pages/Inquiries";
+import AddVehicle from "./components/model/AddVehicle";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="users" element={<Users />} />
           <Route path="inquiries" element={<Inquiries />} />
         </Route>
+        <Route path="/add-vehicle/:id" element={<AddVehicle/>} />
       </Routes>
     </div>
   );

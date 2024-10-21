@@ -25,13 +25,17 @@ export const carStoreApi = api.injectEndpoints({
       }),
     }),
 
-    getCardataById:builder.query({
-      query:builder.query({
-        query:(vehicleId) => `cars/${vehicleId}`
-      })
-    })
+    
+    getCardataById: builder.query({
+      query: (vehicleId) => `cars/${vehicleId}`,
+    }),
+    
   }),
 });
 
-export const { useGetAllCarsQuery, useAddCarMutation, useDeleteCarMutation } =
-  carStoreApi;
+export const {
+  useGetAllCarsQuery,
+  useAddCarMutation,
+  useDeleteCarMutation,
+  useGetCardataByIdQuery,
+} = carStoreApi;

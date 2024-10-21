@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 function Vehicles() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [selectedCarId, setSelectedCarId] = useState(null); // Declare selectedCarId state
   const { data: carData, refetch: allVehiclesRefetch } = useGetAllCarsQuery();
   const [deleteVehicle] = useDeleteCarMutation();
 
@@ -24,12 +25,18 @@ function Vehicles() {
     setModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
+  const handleUpdate = (carId) => {
+    setSelectedCarId(carId); 
+    setModalOpen(true); 
+    console.log(carId)
   };
 
-  // Filtered car data based on search query (carName or brandName)
-  const filteredCars = carData?.payload?.filter(
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedCarId(null); 
+  };
+
+   const filteredCars = carData?.payload?.filter(
     (car) =>
       car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -163,7 +170,12 @@ function Vehicles() {
                   <td style={{ width: "15%" }}>{car.engine}</td>
                   <td style={{ width: "15%" }}>{car.price}</td>
                   <td style={{ width: "10%" }} className="table-icon">
-                    <span className="material-symbols-outlined">edit</span>
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => handleUpdate(car.id)} // Pass car ID when editing
+                    >
+                      edit
+                    </span>
                   </td>
                   <td
                     style={{ width: "10%", marginRight: "10px" }}
@@ -182,7 +194,11 @@ function Vehicles() {
           </Table>
         </div>
       </div>
-      <AddVehicle open={isModalOpen} handleClose={handleCloseModal} />
+      <AddVehicle
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+        carId={selectedCarId} // Pass selectedCarId to the AddVehicle component
+      />
     </>
   );
 }

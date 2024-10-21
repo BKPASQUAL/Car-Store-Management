@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Modal,
@@ -8,6 +8,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
@@ -16,6 +17,7 @@ import "../../assets/css/AddVehicle.css";
 import {
   useAddCarMutation,
   useGetAllCarsQuery,
+  useGetCardataByIdQuery,
 } from "../../store/api/carStore";
 
 const style = {
@@ -29,12 +31,38 @@ const style = {
   p: 6,
 };
 
-const AddVehicle = ({ open, handleClose }) => {
-  const { register, handleSubmit, reset, control } = useForm();
+const AddVehicle = ({ open, handleClose, carId }) => {
+  const { register, handleSubmit, reset, control, setValue } = useForm();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [brandId, setBrandId] = useState();
   const [addVehicle] = useAddCarMutation();
   const { refetch: allVehiclesRefetch } = useGetAllCarsQuery();
+  const { data: getCarDataById , isLoading } = useGetCardataByIdQuery(carId, {
+    skip: !carId,
+  });
+
+  // Effect to populate form when editing a vehicle
+  useEffect(() => {
+    if (getCarDataById?.payload && carId) {
+      const carData = getCarDataById.payload;
+
+      setValue("carName", carData.carName);
+      setValue("manufacturingYear", carData.manufacturingYear);
+      setValue("exteriorColour", carData.exteriorColour);
+      setValue("engine", carData.engine);
+      setValue("bodyType", carData.bodyType);
+      setValue("transmission", carData.transmission);
+      setValue("fuelType", carData.fuelType);
+      setValue("driverPosition", carData.driverPosition);
+      setValue("price", carData.price);
+      setBrandId(carData.brandId);
+
+      // Set the selected files from URLs for preview
+      setSelectedFiles(
+        carData.CarPhotos?.map((url) => ({ url, isUploaded: true })) || []
+      );
+    }
+  }, [getCarDataById, carId, setValue]);
 
   const Toast = Swal.mixin({
     toast: true,
@@ -55,13 +83,13 @@ const AddVehicle = ({ open, handleClose }) => {
         icon: "error",
         title: "Error...",
         text: "You can upload a maximum of 5 photos.",
-        customClass: {
-          container: "swal-warning",
-        },
       });
       return;
     }
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+    setSelectedFiles((prevFiles) => [
+      ...prevFiles,
+      ...files.map((file) => ({ file, isUploaded: false })),
+    ]);
   };
 
   const removeImage = (index) => {
@@ -71,16 +99,14 @@ const AddVehicle = ({ open, handleClose }) => {
   const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append("brandId", brandId);
-    // Object.entries(data).forEach(([key, value]) => formData.append(key, value));
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key]);
+    Object.entries(data).forEach(([key, value]) => formData.append(key, value));
+    selectedFiles.forEach(({ file }) => {
+      if (file) formData.append("CarPhotos", file);
     });
-    selectedFiles.forEach((file) => formData.append("CarPhotos", file));
 
     try {
       handleClose();
 
-      // Show loading indicator while making the API call
       Swal.fire({
         title: "Adding Vehicle...",
         allowOutsideClick: false,
@@ -89,11 +115,9 @@ const AddVehicle = ({ open, handleClose }) => {
         },
       });
 
-      // Make API call to add vehicle
       const response = await addVehicle(formData).unwrap();
 
       if (response?.payload && !response?.error) {
-        // Show success message and reset the form if no error
         allVehiclesRefetch();
         Swal.close();
         reset();
@@ -101,7 +125,6 @@ const AddVehicle = ({ open, handleClose }) => {
         setBrandId("");
         Toast.fire({ icon: "success", title: response.payload });
       } else {
-        // Show error message from API response
         Swal.close();
         Swal.fire({
           icon: "error",
@@ -116,9 +139,7 @@ const AddVehicle = ({ open, handleClose }) => {
         setBrandId("");
       }
     } catch (error) {
-      console.error("Error:", error);
       Swal.close();
-      // Show error message for unexpected errors
       Swal.fire({
         icon: "error",
         title: "Error Occurred",
@@ -132,7 +153,11 @@ const AddVehicle = ({ open, handleClose }) => {
       <Box sx={style}>
         <h2 className="addveh-title">Add New Vehicle</h2>
         <hr />
-
+        {isLoading ? ( // Show loading indicator when loading
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
+          </div>
+        ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="image-upload">
             <Button
@@ -150,10 +175,14 @@ const AddVehicle = ({ open, handleClose }) => {
               />
             </Button>
             <div className="image-previews">
-              {selectedFiles.map((file, index) => (
+              {selectedFiles.map((fileData, index) => (
                 <div key={index} className="image-preview">
                   <img
-                    src={URL.createObjectURL(file)}
+                    src={
+                      fileData.isUploaded
+                        ? fileData.url
+                        : URL.createObjectURL(fileData.file)
+                    }
                     alt={`Preview ${index + 1}`}
                     className="preview-img"
                   />
@@ -169,11 +198,7 @@ const AddVehicle = ({ open, handleClose }) => {
           </div>
 
           <div className="input-fields">
-            <FormControl
-              fullWidth
-              className="addveh-brand"
-              rules={{ required: "Vehicle name is required" }}
-            >
+            <FormControl fullWidth className="addveh-brand">
               <InputLabel>Brand</InputLabel>
               <Select
                 value={brandId}
@@ -185,6 +210,7 @@ const AddVehicle = ({ open, handleClose }) => {
               </Select>
             </FormControl>
 
+            {/* Input fields for vehicle details */}
             <Controller
               name="carName"
               control={control}
@@ -272,23 +298,20 @@ const AddVehicle = ({ open, handleClose }) => {
               className="addvehicle-cancel-btn"
               onClick={() => {
                 reset();
-                setBrandId();
+                setBrandId("");
                 setSelectedFiles([]);
                 handleClose();
               }}
             >
               Cancel
             </button>
-            <button
-              className="addvehicle-submit-btn"
-              type="submit"
-              sx={{ marginRight: 2 }}
-              //   disabled={selectedFiles.length === 0}
-            >
+            <button className="addvehicle-submit-btn" type="submit">
               Save
             </button>
           </div>
         </form>
+                )}
+
       </Box>
     </Modal>
   );
