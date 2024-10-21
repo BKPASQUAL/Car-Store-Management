@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Modal,
@@ -8,12 +8,18 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 import Swal from "sweetalert2";
 import "../../assets/css/AddVehicle.css";
-import { useAddCarMutation } from "../../store/api/carStore";
+import {
+  useAddUserMutation,
+  useGetAllUsersQuery,
+  useGetUserByIDQuery,
+  useUpdateUserMutation,
+} from "../../store/api/userApi";
 
 const style = {
   position: "absolute",
@@ -26,11 +32,49 @@ const style = {
   p: 6,
 };
 
-const AddUser = ({ open, handleClose }) => {
-  const { register, handleSubmit, reset, control } = useForm();
+const AddUser = ({ open, handleClose, userId }) => {
+  const { register, handleSubmit, reset, control, setValue } = useForm();
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [brandId, setBrandId] = useState();
-  const [addVehicle] = useAddCarMutation();
+  const [addUser] = useAddUserMutation();
+  const { refetch: getAllUsersRefetch } = useGetAllUsersQuery();
+  const {
+    data: getDataById,
+    isLoading,
+    refetch: userDataByIdRefetch,
+  } = useGetUserByIDQuery(userId, {
+    skip: !userId,
+  });
+  const [updateUser] = useUpdateUserMutation();
+
+  useEffect(() => {
+    if (open && userId) {
+      userDataByIdRefetch(); // Refetch the data when the modal opens
+    }
+  }, [open, userId, userDataByIdRefetch]);
+
+  useEffect(() => {
+    if (getDataById?.payload && userId && !isLoading) {
+      const userData = getDataById.payload;
+
+      // Set form default values
+      setValue("name", userData.name);
+      setValue("email", userData.email);
+      setValue("contactNo", userData.contactNo);
+      setValue("address", userData.address);
+      setValue("username", userData.username);
+      setValue("gender", userData.gender);
+      setValue("roleId", userData.roleId);
+
+      // Set the selected files from the image URL for preview
+      if (userData.image) {
+        setSelectedFiles([{ url: userData.image, isUploaded: true }]);
+      }
+    } else if (!userId) {
+      // Reset form for adding a new user
+      reset();
+      setSelectedFiles([]);
+    }
+  }, [getDataById, isLoading, setValue, reset, userId]);
 
   const Toast = Swal.mixin({
     toast: true,
@@ -52,8 +96,8 @@ const AddUser = ({ open, handleClose }) => {
         title: "Error...",
         text: "You can upload only one photo.",
         customClass: {
-          container: 'swal-warning'
-        }
+          container: "swal-warning",
+        },
       });
       return;
     }
@@ -64,46 +108,60 @@ const AddUser = ({ open, handleClose }) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
+  const isUpdateUser = !!userId;
+  const isNewUser = !isUpdateUser;
+
   const onSubmit = async (data) => {
-    console.log("data:", data);
     const formData = new FormData();
-    formData.append("brandId", brandId);
-    // Object.entries(data).forEach(([key, value]) => formData.append(key, value));
+
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
-    selectedFiles.forEach((file) => formData.append("CarPhotos", file));
+    selectedFiles.forEach((file) => {
+      if (file.url) {
+        // Ignore already uploaded images
+        formData.append("image", file.url);
+      } else {
+        formData.append("image", file);
+      }
+    });
 
     try {
       handleClose();
-      console.log("formData:", formData);
 
-      // Show loading indicator while making the API call
       Swal.fire({
-        title: "Adding Vehicle...",
+        title: userId ? "Updating User..." : "Adding User...",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
         },
       });
 
-      // Make API call to add vehicle
-      const response = await addVehicle(formData);
-      console.log("API Response:", response);
+      let response;
+      if (isUpdateUser) {
+        // Update user if userId is present
+        response = await updateUser({ id: userId, inputData: formData });
+      } else {
+        // Add new user if no userId
+        response = await addUser(formData);
+      }
 
-      if (response?.payload && !response?.error) {
-        // Show success message and reset the form if no error
+      if (response?.data?.payload && !response?.data?.error) {
         Swal.close();
         reset();
         setSelectedFiles([]);
-        setBrandId("");
-        Toast.fire({ icon: "success", title: response.payload });
+        getAllUsersRefetch();
+        Toast.fire({
+          icon: "success",
+          title:
+            response.payload ||
+            `${userId ? "User updated" : "User added"} successfully!`,
+        });
       } else {
-        // Show error message from API response
         Swal.close();
         Swal.fire({
           icon: "error",
-          title: "Failed to Add Vehicle",
+          title: userId ? "Failed to Update User" : "Failed to Add User",
           text:
             response?.error?.data?.payload ||
             response?.data?.payload ||
@@ -111,16 +169,16 @@ const AddUser = ({ open, handleClose }) => {
         });
         reset();
         setSelectedFiles([]);
-        setBrandId("");
       }
     } catch (error) {
       console.error("Error:", error);
       Swal.close();
-      // Show error message for unexpected errors
       Swal.fire({
         icon: "error",
         title: "Error Occurred",
-        text: "Unable to add vehicle. Please try again later.",
+        text: `Unable to ${
+          userId ? "update" : "add"
+        } user. Please try again later.`,
       });
     }
   };
@@ -128,150 +186,161 @@ const AddUser = ({ open, handleClose }) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <h2 className="addveh-title">Add New User</h2>
+        <h2 className="addveh-title">
+          {userId ? "Edit User" : "Add New User"}
+        </h2>
         <hr />
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="image-upload">
-            <Button
-              variant="outlined"
-              component="label"
-              startIcon={<CameraRetroIcon />}
-            >
-              Profile Picture
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                hidden
-                onChange={handleImageUpload}
-              />
-            </Button>
-            <div className="image-previews">
-              {selectedFiles.map((file, index) => (
-                <div key={index} className="image-preview">
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`Preview ${index + 1}`}
-                    className="preview-img"
-                  />
-                  <span
-                    className="material-symbols-outlined"
-                    onClick={() => removeImage(index)}
-                  >
-                    delete
-                  </span>
-                </div>
-              ))}
-            </div>
+        {isLoading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <CircularProgress />
           </div>
-
-          <div className="input-fields">
-            <Controller
-              name="name"
-              control={control}
-              rules={{ required: "Name is required" }}
-              render={({ field, fieldState }) => (
-                <TextField
-                  {...field}
-                  label="Name"
-                  fullWidth
-                  margin="normal"
-                  error={!!fieldState.error}
-                  helperText={fieldState.error?.message}
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="image-upload">
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<CameraRetroIcon />}
+              >
+                Profile Picture
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={handleImageUpload}
                 />
-              )}
-            />
+              </Button>
+              <div className="image-previews">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="image-preview">
+                    <img
+                      src={file.url || URL.createObjectURL(file)}
+                      alt={`Preview ${index + 1}`}
+                      className="preview-img"
+                    />
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => removeImage(index)}
+                    >
+                      delete
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            <FormControl
-              fullWidth
-              className="addveh-brand"
-            >
-              <InputLabel>Role</InputLabel>
-              <Select
-                value={brandId}
-                onChange={(e) => setBrandId(e.target.value)}
+            <div className="input-fields">
+              <Controller
+                name="name"
+                control={control}
+                rules={{ required: "Name is required" }}
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    label="Name"
+                    fullWidth
+                    margin="normal"
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                  />
+                )}
+              />
+              <FormControl fullWidth className="addveh-brand">
+                <InputLabel>Role</InputLabel>
+                <Controller
+                  name="roleId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select {...field} label="Role">
+                      <MenuItem value={1}>Admin</MenuItem>
+                      <MenuItem value={2}>User</MenuItem>
+                    </Select>
+                  )}
+                />
+              </FormControl>
+
+              <TextField
+                {...register("email")}
+                label="Email"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., abc@example.com"
+              />
+
+              <TextField
+                {...register("contactNo")}
+                label="Contact"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., 0771234567"
+              />
+
+              <TextField
+                {...register("address")}
+                label="Address"
+                fullWidth
+                margin="normal"
+                placeholder="e.g., California, USA"
+              />
+
+              <FormControl fullWidth className="addveh-brand">
+                <InputLabel>Gender</InputLabel>
+                <Controller
+                  name="gender"
+                  control={control}
+                  render={({ field }) => (
+                    <Select {...field} label="Gender">
+                      <MenuItem value="Male">Male</MenuItem>
+                      <MenuItem value="Female">Female</MenuItem>
+                    </Select>
+                  )}
+                />
+              </FormControl>
+
+              <TextField
+                {...register("username")}
+                label="Username"
+                fullWidth
+                margin="normal"
+              />
+
+              <TextField
+                {...register("password")}
+                label="Password"
+                fullWidth
+                margin="normal"
+                disabled={!!userId}
+              />
+            </div>
+
+            <div className="form-actions">
+              <button
+                className="addvehicle-cancel-btn"
+                onClick={() => {
+                  reset();
+                  setSelectedFiles([]);
+                  handleClose();
+                }}
               >
-                <MenuItem value={1}>Admin</MenuItem>
-                <MenuItem value={2}>User</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              {...register("email")}
-              label="Email"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., abc@example.com"
-            />
-
-            <TextField
-              {...register("contactNo")}
-              label="Contact"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., 0771234567"
-            />
-
-            <TextField
-              {...register("address")}
-              label="Address"
-              fullWidth
-              margin="normal"
-              placeholder="e.g., California, USA"
-            />
-
-            <FormControl
-              fullWidth
-              className="addveh-brand"
-            >
-              <InputLabel>Gender</InputLabel>
-              <Select
-                value={brandId}
-                onChange={(e) => setBrandId(e.target.value)}
+                Cancel
+              </button>
+              <button
+                className="addvehicle-submit-btn"
+                type="submit"
+                sx={{ marginRight: 2 }}
               >
-                <MenuItem value={1}>Male</MenuItem>
-                <MenuItem value={2}>Female</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              {...register("username")}
-              label="Username"
-              fullWidth
-              margin="normal"
-            />
-
-            <TextField
-              {...register("password")}
-              label="Password"
-              fullWidth
-              margin="normal"
-            />
-          </div>
-
-          <div className="form-actions">
-            <button
-              className="addvehicle-cancel-btn"
-              onClick={() => {
-                reset();
-                setBrandId();
-                setSelectedFiles([]);
-                handleClose();
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              className="addvehicle-submit-btn"
-              type="submit"
-              sx={{ marginRight: 2 }}
-              //   disabled={selectedFiles.length === 0}
-            >
-              Save
-            </button>
-          </div>
-        </form>
+                Save
+              </button>
+            </div>
+          </form>
+        )}
       </Box>
     </Modal>
   );
