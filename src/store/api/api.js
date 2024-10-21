@@ -3,8 +3,8 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 // Initialize an empty api service that we'll inject endpoints into later as needed
 export const api = createApi({
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:4002/',
-        // baseUrl: 'http://3.104.75.209:4002/',
+        // baseUrl: 'https://www.champikahardware.online/',
+        baseUrl: 'http://localhost:4003/',
 
         prepareHeaders: (headers) => {
             const accessToken = localStorage.getItem('accessToken'); 

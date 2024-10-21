@@ -13,32 +13,44 @@ import {
 } from "../store/api/carStore";
 import cardummy from "../assets/images/cardummy.png";
 import Swal from "sweetalert2";
+import { useGetAllBrandsQuery } from "../store/api/brands";
 
 function Vehicles() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const [selectedCarId, setSelectedCarId] = useState(null); 
+  const [selectedBrand, setSelectedBrand] = useState(null); 
   const { data: carData, refetch: allVehiclesRefetch } = useGetAllCarsQuery();
   const [deleteVehicle] = useDeleteCarMutation();
+  const { data: getAllBrands } = useGetAllBrandsQuery(); 
 
+  console.log(getAllBrands)
   const handleOpenModal = () => {
     setModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
+  const handleUpdate = (carId) => {
+    setSelectedCarId(carId); 
+    setModalOpen(true); 
+    console.log(carId)
   };
 
-  // Filtered car data based on search query (carName or brandName)
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedCarId(null); 
+  };
+
   const filteredCars = carData?.payload?.filter(
     (car) =>
-      car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())
+      (car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (selectedBrand ? car.brandId === selectedBrand : true) 
   );
 
-  const data = ["Eugenia", "Bryan"].map((item) => ({
-    label: item,
-    value: item,
-  }));
+  const brandOptions = getAllBrands?.payload?.map((brand) => ({
+    label: brand.brandName, 
+    value: brand.id,   
+  })) || [];
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -101,8 +113,8 @@ function Vehicles() {
             <InputGroup inside style={{ width: "500px" }} size="lg">
               <Input
                 placeholder="Search Vehicles By Name or Brand ..."
-                value={searchQuery} // Bind input value to state
-                onChange={(value) => setSearchQuery(value)} // Update state on input
+                value={searchQuery} 
+                onChange={(value) => setSearchQuery(value)} 
               />
               <InputGroup.Button>
                 <SearchIcon />
@@ -111,10 +123,12 @@ function Vehicles() {
           </div>
           <div className="carStore-right">
             <InputPicker
-              data={data}
+              data={brandOptions}
               style={{ width: 250, marginRight: "60px" }}
               size="lg"
               placeholder="Select Brand"
+              onChange={(value) => setSelectedBrand(value)} 
+              value={selectedBrand}
             />
             <button className="carStore-add-btn" onClick={handleOpenModal}>
               <span className="material-symbols-outlined addcar-crossicon">
@@ -144,7 +158,7 @@ function Vehicles() {
                 <tr key={car.id}>
                   <td style={{ width: "5%" }}>
                     <img
-                      src={car.CarPhotos?.[0] || cardummy}
+                      src={car.brandImage || cardummy}
                       alt={car.carName}
                       style={{
                         width: "40px",
@@ -163,7 +177,12 @@ function Vehicles() {
                   <td style={{ width: "15%" }}>{car.engine}</td>
                   <td style={{ width: "15%" }}>{car.price}</td>
                   <td style={{ width: "10%" }} className="table-icon">
-                    <span className="material-symbols-outlined">edit</span>
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => handleUpdate(car.id)} 
+                    >
+                      edit
+                    </span>
                   </td>
                   <td
                     style={{ width: "10%", marginRight: "10px" }}
@@ -182,7 +201,11 @@ function Vehicles() {
           </Table>
         </div>
       </div>
-      <AddVehicle open={isModalOpen} handleClose={handleCloseModal} />
+      <AddVehicle
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+        carId={selectedCarId} 
+      />
     </>
   );
 }
