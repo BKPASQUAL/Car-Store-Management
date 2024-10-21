@@ -1,105 +1,69 @@
 import React, { useState } from "react";
 import "../assets/css/Inquiries.css";
 import Navbar from "../components/common/Navbar";
+import { useGetAllinquiriesQuery, useMarkAsResponseMutation } from "../store/api/inquiries";
 
 const Inquiries = () => {
-  const inquiries = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      contact: "123-456-7890",
-      location: "New York, USA",
-      message: "Looking for more details about your services.",
-      preferredContactMethod: "Email",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      contact: "098-765-4321",
-      location: "London, UK",
-      message: "Interested in a partnership opportunity.",
-      preferredContactMethod: "Phone",
-    },
-    {
-        id: 3,
-        name: "Jane Smith",
-        email: "jane@example.com",
-        contact: "098-765-4321",
-        location: "London, UK",
-        message: "Interested in a partnership opportunity.",
-        preferredContactMethod: "Phone",
-      },
-      {
-        id: 4,
-        name: "Jane Smith",
-        email: "jane@example.com",
-        contact: "098-765-4321",
-        location: "London, UK",
-        message: "Interested in a partnership opportunity.",
-        preferredContactMethod: "Phone",
-      },
-  ];
+  const { data: inquiriesData, refetch } = useGetAllinquiriesQuery();
+  const [markAsResponse] = useMarkAsResponseMutation();
 
-  const [respondedInquiries, setRespondedInquiries] = useState([]);
-
-  const toggleRespond = (inquiryId) => {
-    setRespondedInquiries((prev) =>
-      prev.includes(inquiryId)
-        ? prev.filter((id) => id !== inquiryId)
-        : [...prev, inquiryId]
-    );
+  const toggleRespond = async (inquiryId) => {
+    try {
+      // Call the mutation to mark as responded
+      await markAsResponse({ id: inquiryId }).unwrap();
+      
+      // Optionally, refetch the inquiries to get updated data
+      refetch();
+    } catch (error) {
+      console.error("Failed to mark inquiry as responded:", error);
+      // You can also show a notification to the user here if needed
+    }
   };
 
   return (
     <>
-      <Navbar title="Inquiries" icon="mail" />
+      <Navbar
+        title="Inquiries"
+        icon="mail"
+        count={inquiriesData?.payload ? inquiriesData.payload.length : "00"}
+      />
       <div className="inquiries-container">
-        {inquiries.map((inquiry) => {
-          const isResponded = respondedInquiries.includes(inquiry.id);
-
+        {inquiriesData?.payload?.map((inquiry) => {
           return (
             <div
               key={inquiry.id}
-              className={`inquiry-card ${isResponded ? "responded" : ""}`}
+              className={`inquiry-card ${inquiry.responsed ? "responded" : ""}`}
             >
               <div className="inquiry-header">
                 <h3>{inquiry.name}</h3>
                 <button
-                  className={`respond-btn ${
-                    isResponded ? "responded-btn" : ""
-                  }`}
+                  className={`respond-btn ${inquiry.responsed ? "responded-btn" : ""}`}
                   onClick={() => toggleRespond(inquiry.id)}
+                  disabled={inquiry.responsed} // Disable button if already responded
                 >
-                  {isResponded ? "Responded" : "Mark as Responded"}
+                  {inquiry.responsed ? "Responded" : "Mark as Responded"}
                 </button>
               </div>
 
               <div className="inquiry-body">
                 <div className="inquiry-highlight">
-                  <p>{inquiry.message}</p>
+                  <p>{inquiry.massage}</p>
                 </div>
 
                 <div className="inquiry-info-con">
                   <div className="inquiry-info">
-                    <span class="material-symbols-outlined">mail</span>
+                    <span className="material-symbols-outlined">mail</span>
                     {inquiry.email}
                   </div>
                   <div className="inquiry-info">
-                    <span class="material-symbols-outlined">call</span>
-                    {inquiry.contact}
+                    <span className="material-symbols-outlined">call</span>
+                    {inquiry.contactNo}
                   </div>
                   <div className="inquiry-info">
-                    <span class="material-symbols-outlined">location_on</span>
+                    <span className="material-symbols-outlined">location_on</span>
                     {inquiry.location}
                   </div>
-                  <div className="inquiry-info">
-                    <span class="material-symbols-outlined">
-                      connect_without_contact
-                    </span>
-                    {inquiry.preferredContactMethod}
-                  </div>
+                  {/* Remove preferredContactMethod if not needed */}
                 </div>
               </div>
             </div>

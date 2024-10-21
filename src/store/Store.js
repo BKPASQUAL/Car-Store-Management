@@ -3,6 +3,7 @@ import api from "./api/api";
 import { authApi } from "./api/authApi";
 import { carStoreApi } from "./api/carStore";
 import { brandApi } from "./api/brands";
+import { inquiriesApi } from "./api/inquiries";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [carStoreApi.reducerPath]: carStoreApi.reducer,
     [brandApi.reducerPath]: carStoreApi.reducer,
+    [inquiriesApi.reducerPath]: carStoreApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -17,7 +19,8 @@ export const store = configureStore({
       api.middleware,
       authApi.middleware,
       carStoreApi.middleware,
-      brandApi.middleware
+      brandApi.middleware,
+      inquiriesApi.middleware
     );
   },
 });
