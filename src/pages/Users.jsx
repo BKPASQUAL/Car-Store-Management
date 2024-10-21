@@ -11,21 +11,29 @@ import { useGetAllUsersQuery } from "../store/api/userApi";
 
 function Users() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search input
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { data: userData } = useGetAllUsersQuery();
 
   const handleOpenModal = () => {
+    setSelectedUserId(null); // Reset user ID when adding a new user
+    setModalOpen(true);
+  };
+
+  const handleUpdate = (userId) => {
+    setSelectedUserId(userId);
     setModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setModalOpen(false);
+    setSelectedUserId(null);
   };
 
-  // Filter user data based on search query (firstName or lastName)
+  // Filter user data based on search query (name or lastName)
   const filteredUsers = userData?.payload?.filter(
     (user) =>
-      user?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user?.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -39,12 +47,11 @@ function Users() {
       <div className="carStore-main">
         <div className="carStore-top">
           <div className="carStore-left">
-            {/* Search Input */}
             <InputGroup inside style={{ width: "500px" }} size="lg">
               <Input
                 placeholder="Search By User's Name ..."
-                value={searchQuery} // Bind input value to state
-                onChange={(value) => setSearchQuery(value)} // Update state on input
+                value={searchQuery}
+                onChange={(value) => setSearchQuery(value)}
               />
               <InputGroup.Button>
                 <SearchIcon />
@@ -60,7 +67,7 @@ function Users() {
             </button>
           </div>
         </div>
-        <div style={{ maxHeight: "650px", overflowY: "auto", width: "auto" }}>
+        <div style={{ maxHeight: "640px", overflowY: "auto", width: "auto" }}>
           <Table striped hover className="product-table text-left table-fixed">
             <thead>
               <tr>
@@ -81,7 +88,7 @@ function Users() {
                   <td style={{ width: "5%" }}>
                     <img
                       src={user.image || dummy}
-                      alt={`${user.firstName} ${user.lastName}`}
+                      alt={`${user.name}`}
                       style={{
                         width: "40px",
                         height: "40px",
@@ -91,7 +98,7 @@ function Users() {
                     />
                   </td>
                   <td style={{ width: "15%" }} className="carStore-table">
-                    {user.firstName} {user.lastName}
+                    {user.name}
                   </td>
                   <td style={{ width: "15%" }}>{user.role?.role}</td>
                   <td style={{ width: "15%" }}>{user.email}</td>
@@ -99,7 +106,12 @@ function Users() {
                   <td style={{ width: "15%" }}>{user.address}</td>
                   <td style={{ width: "15%" }}>{user.gender}</td>
                   <td style={{ width: "10%" }} className="table-icon">
-                    <span className="material-symbols-outlined">edit</span>
+                    <span
+                      className="material-symbols-outlined"
+                      onClick={() => handleUpdate(user.id)}
+                    >
+                      edit
+                    </span>
                   </td>
                   <td
                     style={{ width: "10%", marginRight: "10px" }}
@@ -113,7 +125,7 @@ function Users() {
           </Table>
         </div>
       </div>
-      <AddUser open={isModalOpen} handleClose={handleCloseModal} />
+      <AddUser open={isModalOpen} handleClose={handleCloseModal} userId={selectedUserId} />
     </>
   );
 }

@@ -33,15 +33,14 @@ export const userApi = api.injectEndpoints({
     }),
 
     getUserByID: builder.query({
-      query: (id) => `user/getUserById/${id}`,
+      query: (id) => `users/${id}`,
     }),
-
 
     updateUser: builder.mutation({
       query: ({ id, inputData }) => {
         console.log("Data before making API call:", id, inputData);
         return {
-          url: `user/updateUser/${id}`,
+          url: `users/${id}`,
           method: "PATCH",
           body: inputData,
         };

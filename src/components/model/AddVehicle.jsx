@@ -56,7 +56,7 @@ const AddVehicle = ({ open, handleClose, carId }) => {
   }, [open, carId, carDataByIdrefetch]);
 
   useEffect(() => {
-    if (getCarDataById?.payload && carId) {
+    if (getCarDataById?.payload && carId && !isLoading) {
       const carData = getCarDataById.payload;
 
       setValue("carName", carData.carName);
@@ -79,7 +79,7 @@ const AddVehicle = ({ open, handleClose, carId }) => {
       setSelectedFiles([]);
       setBrandId("");
     }
-  }, [getCarDataById, carId, setValue, reset]);
+  }, [getCarDataById,isLoading, carId, setValue, reset]);
 
   const Toast = Swal.mixin({
     toast: true,

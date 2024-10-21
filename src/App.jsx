@@ -24,7 +24,7 @@ export default function App() {
           <Route path="users" element={<Users />} />
           <Route path="inquiries" element={<Inquiries />} />
         </Route>
-        <Route path="/add-vehicle/:id" element={<AddVehicle/>} />
+        <Route path="/editVehicle/:id" element={<AddVehicle/>} />
       </Routes>
     </div>
   );
