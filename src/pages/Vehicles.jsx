@@ -211,4 +211,3 @@ function Vehicles() {
 }
 
 export default Vehicles;
-module
