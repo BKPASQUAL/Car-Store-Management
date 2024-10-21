@@ -1,0 +1,103 @@
+/* Inquiries.css */
+.inquiries-container {
+    padding: 20px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 20px;
+  }
+  
+  /* Inquiry card styling */
+  .inquiry-card {
+    background: #fffaea;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+  
+  .inquiry-card:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Header section for name and button */
+  .inquiry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .inquiry-header h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  /* Button styles */
+  .respond-btn {
+    background-color: #B68D40;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .respond-btn:hover {
+    background-color: #8d6d32;
+  }
+  
+  .responded-btn {
+    background-color: #28a745;
+  }
+  
+  .responded-btn:hover {
+    background-color: #218838;
+  }
+  
+  /* Highlight message section */
+  .inquiry-highlight {
+    background-color: #e8f5e9;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    font-size: 16px;
+    color: #575757;
+    font-weight: bold;
+    margin-top: 10px;
+    /* border-left: 4px solid #2e7d32; */
+  }
+  
+  /* Information section with icons */
+  .inquiry-info-con {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 35%;
+    padding: 0 10px;
+    padding-bottom: 20px;
+  }
+  
+  .inquiry-info {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2e2e2e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .inquiry-info span {
+    color: #B68D40;
+    font-size: 25px;
+  }
+  
+  /* Responded card indicator */
+  .inquiry-card.responded {
+    border-left: 5px solid #28a745;
+    opacity: 0.95;
+  }
+  
