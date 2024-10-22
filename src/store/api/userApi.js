@@ -14,7 +14,7 @@ export const userApi = api.injectEndpoints({
     }),
 
     getUserRoles: builder.query({
-      query: () => "user/getUserRoles",
+      query: () => "users/getUserRoles",
     }),
 
     getAllUsers: builder.query({
@@ -22,7 +22,7 @@ export const userApi = api.injectEndpoints({
     }),
 
     getSignedUser: builder.query({
-      query: () => "user/getSignedUser",
+      query: () => "users/signgnedUser",
     }),
 
     deleteUser: builder.mutation({

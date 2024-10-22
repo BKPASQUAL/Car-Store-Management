@@ -1,47 +1,48 @@
 .nav-main {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 50px;
-    height: 100px;
-    align-items: center;
-    background-color: #ffffff; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .nav-left{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 50px;
+  height: 100px;
+  align-items: center;
+  background-color: #ffffff; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  .nav-left span {
-    font-size: 30px;
-    font-weight: 600;
-  }
+.nav-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .nav-left h2 {
-    margin: 0;
-    margin-left: 20px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    color: #122620;
-  }
-  
-  .nav-right h4 {
-    margin: 0;
-    font-weight: 600;
-    font-size: 28px;
-    color: #122620; 
-    cursor: pointer;
-  }
-  
-  
-  /* .nav-divider {
-    margin: 10px 50px 0 50px;
-    background-color: #d9d9d9;
-    height: 2px;
-    border-radius: 4px;
-  } */
-  
+.nav-left span {
+  font-size: 30px;
+  font-weight: 600;
+}
 
-  
+.nav-left h2 {
+  margin: 0;
+  margin-left: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  color: #122620;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center; /* Vertically center the user image and username */
+}
+
+.nav-right img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px; /* Add some space between the image and username */
+}
+
+.nav-right h4 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 28px;
+  color: #122620;
+  cursor: pointer;
+}
