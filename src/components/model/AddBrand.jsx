@@ -25,24 +25,29 @@ const style = {
 const AddBrand = ({ open, handleClose, brandId }) => {
   const [brandName, setBrandName] = useState("");
   const [brandImage, setBrandImage] = useState(null);
-  const [existingImage, setExistingImage] = useState(null); // For existing image when editing
+  const [existingImage, setExistingImage] = useState(null); 
   const [loading, setLoading] = useState(false);
   
   const [addBrand] = useAddBrandMutation();
-  const [updateBrand] = useUpdatebrandMutation();  // Mutation for updating brand
+  const [updateBrand] = useUpdatebrandMutation();  
   const { refetch } = useGetAllBrandsQuery();
-  const { data: getBrandById, isLoading } = useGetBrandByIdQuery(brandId, {
+  const { data: getBrandById, isLoading , refetch: getBrandByIdRefetch} = useGetBrandByIdQuery(brandId, {
     skip: !brandId,
   });
 
-  // Effect to load brand data when editing
+  useEffect(() => {
+    if (open && brandId) {
+      getBrandByIdRefetch(); 
+    }
+  }, [open, brandId, getBrandByIdRefetch]);
+
   useEffect(() => {
     if (getBrandById?.payload && brandId && !isLoading) {
       const brandData = getBrandById.payload;
-      setBrandName(brandData.brandName);  // Populate brand name
-      setExistingImage(brandData.brandImage);  // Populate existing image URL
+      setBrandName(brandData.brandName);  
+      setExistingImage(brandData.brandImage);  
     } else if (!brandId) {
-      resetForm(); // Reset form when adding new brand
+      resetForm(); 
     }
   }, [getBrandById, isLoading, brandId]);
 
@@ -73,7 +78,7 @@ const AddBrand = ({ open, handleClose, brandId }) => {
 
     const formData = new FormData();
     formData.append("brandName", brandName);
-    if (brandImage) formData.append("brandImage", brandImage); // Append image only if new one is uploaded
+    if (brandImage) formData.append("brandImage", brandImage); 
     
     // Log data to the console
     console.log("Form Data Submitted:", {

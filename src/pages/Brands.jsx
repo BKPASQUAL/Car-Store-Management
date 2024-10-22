@@ -1,37 +1,89 @@
 import React, { useState } from "react";
 import Navbar from "../components/common/Navbar";
 import "../assets/css/Brands.css";
-import { useGetAllBrandsQuery } from "../store/api/brands";
+import {
+  useDeleteBrandMutation,
+  useGetAllBrandsQuery,
+} from "../store/api/brands";
 import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
-import AddBrand from "../components/model/AddBrand"; 
+import AddBrand from "../components/model/AddBrand";
+import Swal from "sweetalert2";
 import nodataImg from "../assets/images/nodata.svg";
 
 export default function Brands() {
-  const { data: brandData } = useGetAllBrandsQuery();
+  const { data: brandData , refetch : brandDataRefetch } = useGetAllBrandsQuery();
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedBrandId, setSelectedBrandId] = useState(null); 
+  const [selectedBrandId, setSelectedBrandId] = useState(null);
+  const [deleteBrand] = useDeleteBrandMutation();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleOpenModal = () => {
     setModalOpen(true);
-    setSelectedBrandId(null); 
+    setSelectedBrandId(null);
   };
 
   const handleUpdate = (brandId) => {
-    setSelectedBrandId(brandId); 
-    setModalOpen(true); 
+    setSelectedBrandId(brandId);
+    setModalOpen(true);
     console.log(brandId);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false); 
-    setSelectedBrandId(null); 
+    setModalOpen(false);
+    setSelectedBrandId(null);
   };
 
   const filteredBrands = brandData?.payload.filter((brand) =>
     brand.brandName.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await deleteBrand(id);
+        console.log(response);
+        if (response?.data?.payload && !response?.data?.error) {
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: response.payload,
+            showConfirmButton: false,
+            timer: 1000,
+          });
+          brandDataRefetch();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Failed!",
+            text:
+              response?.error?.data?.payload ||
+              response?.data?.payload ||
+              "Something went wrong. Please try again.",
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Error Occurred",
+          text:
+            error.message ||
+            "Unable to delete vehicle. Please try again later.",
+        });
+      }
+    }
+  };
 
   return (
     <>
@@ -81,7 +133,10 @@ export default function Brands() {
                 >
                   edit
                 </span>
-                <span className="material-symbols-outlined delete-icon">
+                <span
+                  className="material-symbols-outlined delete-icon"
+                  onClick={() => handleDelete(brand.id)}
+                >
                   delete
                 </span>
               </div>
@@ -97,7 +152,11 @@ export default function Brands() {
       </div>
 
       {/* AddBrand modal invocation with props */}
-      <AddBrand open={isModalOpen} handleClose={handleCloseModal} brandId={selectedBrandId} />
+      <AddBrand
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+        brandId={selectedBrandId}
+      />
     </>
   );
 }

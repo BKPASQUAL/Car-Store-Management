@@ -23,14 +23,21 @@ export const brandApi = api.injectEndpoints({
     }),
 
     updatebrand: builder.mutation({
-        query: ({ id, inputData }) => {
-          return {
-            url: `brands/${id}`,
-            method: "PATCH",
-            body: inputData,
-          };
-        },
-      })
+      query: ({ id, inputData }) => {
+        return {
+          url: `brands/${id}`,
+          method: "PATCH",
+          body: inputData,
+        };
+      },
+    }),
+
+    deleteBrand: builder.mutation({
+      query: (brandId) => ({
+        url: `brands/${brandId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -38,5 +45,6 @@ export const {
   useGetAllBrandsQuery,
   useAddBrandMutation,
   useGetBrandByIdQuery,
-  useUpdatebrandMutation
+  useUpdatebrandMutation,
+  useDeleteBrandMutation,
 } = brandApi;
