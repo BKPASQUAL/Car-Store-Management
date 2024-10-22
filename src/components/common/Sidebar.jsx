@@ -2,27 +2,35 @@ import React, { useState } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "../../assets/css/Sidebar.css";
 import { useNavigate } from "react-router-dom";
-import LogoutModal from "../model/LogoutModal";
 import image from "../../assets/images/logo.webp";
+import Swal from "sweetalert2";
 
 function SidebarComp() {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState("dashboard");
-  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
-
-  const handleLogoutOpen = () => {
-    setLogoutModalOpen(true);
-  };
-
-  const handleLogoutClose = () => {
-    setLogoutModalOpen(false);
-  };
 
   const navigate = useNavigate();
 
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
     navigate(menuItem);
+  };
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Logout",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Logout",
+    });
+    if (result.isConfirmed) {
+      localStorage.clear();
+      navigate("/");
+      window.location.reload();
+    }
   };
 
   return (
@@ -126,7 +134,7 @@ function SidebarComp() {
         </Menu>
 
         {/* Logout Section */}
-        <div className="sidebar-logout" onClick={handleLogoutOpen}>
+        <div className="sidebar-logout" onClick={handleLogout}>
           <span className="material-symbols-outlined sidebar-logout-icon">
             logout
           </span>
@@ -135,7 +143,7 @@ function SidebarComp() {
       </Sidebar>
 
       {/* Logout Modal */}
-      <LogoutModal open={logoutModalOpen} handleClose={handleLogoutClose} />
+      {/* <LogoutModal open={logoutModalOpen} handleClose={handleLogoutClose} /> */}
     </>
   );
 }
