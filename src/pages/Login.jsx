@@ -59,7 +59,7 @@ function Login() {
   return (
     <div className="login-main">
       <form className="login-form" onSubmit={handleSubmit(handleLogin)}>
-        <img src={image} alt="Your Image" className="login-image" />
+        {/* <img src={image} alt="Your Image" className="login-image" /> */}
         <input
           type="text"
           className="login-name"

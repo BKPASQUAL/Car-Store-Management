@@ -7,7 +7,11 @@
 .product-table th, 
 .product-table td {
   vertical-align: middle;   
-  text-align: left; /* Align text to the left */
+  text-align: left; 
+}
+
+.img-col {
+ text-align: center !important;
 }
 
 .table-fixed thead {

@@ -158,27 +158,27 @@ function Vehicles() {
             <tbody>
               {filteredCars?.map((car, index) => (
                 <tr key={car.id}>
-                  <td style={{ width: "5%" }}>
+                  <td style={{ width: "10%" }} className="img-col">
                     <img
                       src={car.brandImage || cardummy}
                       alt={car.carName}
                       style={{
-                        width: "40px",
-                        height: "40px",
-                        objectFit: "cover",
-                        borderRadius: "5px",
+                        width: "auto",
+                        height: "auto",
+                        maxWidth: "40px",
+                        maxHeight: "40px",
                       }}
                     />
                   </td>
-                  <td style={{ width: "10%" }} className="carStore-table">
+                  <td style={{ width: "20%" }} className="carStore-table">
                     {car.brandName}
                   </td>
-                  <td style={{ width: "16%" }}>{car.carName}</td>
-                  <td style={{ width: "16%" }}>{car.manufacturingYear}</td>
-                  <td style={{ width: "16%" }}>{car.exteriorColour}</td>
-                  <td style={{ width: "16%" }}>{car.engine}</td>
-                  <td style={{ width: "16%" }}>{car.price}</td>
-                  <td style={{ width: "12%" }} className="table-icon">
+                  <td style={{ width: "20%" }}>{car.carName}</td>
+                  <td style={{ width: "10%" }}>{car.manufacturingYear}</td>
+                  <td style={{ width: "10%" }}>{car.exteriorColour}</td>
+                  <td style={{ width: "10%" }}>{car.engine}</td>
+                  <td style={{ width: "10%" }}>{car.price}</td>
+                  <td style={{ width: "5%" }} className="table-icon">
                     <span
                       className="material-symbols-outlined"
                       onClick={() => handleUpdate(car.id)}
@@ -187,7 +187,7 @@ function Vehicles() {
                     </span>
                   </td>
                   <td
-                    style={{ width: "10%", marginRight: "10px" }}
+                    style={{ width: "5%", marginRight: "10px" }}
                     className="table-icon-pen"
                   >
                     <span
