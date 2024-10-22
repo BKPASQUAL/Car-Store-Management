@@ -17,7 +17,26 @@ export const brandApi = api.injectEndpoints({
         };
       },
     }),
+
+    getBrandById: builder.query({
+      query: (brandId) => `/brands/${brandId}`,
+    }),
+
+    updatebrand: builder.mutation({
+        query: ({ id, inputData }) => {
+          return {
+            url: `brands/${id}`,
+            method: "PATCH",
+            body: inputData,
+          };
+        },
+      })
   }),
 });
 
-export const { useGetAllBrandsQuery, useAddBrandMutation } = brandApi;
+export const {
+  useGetAllBrandsQuery,
+  useAddBrandMutation,
+  useGetBrandByIdQuery,
+  useUpdatebrandMutation
+} = brandApi;
