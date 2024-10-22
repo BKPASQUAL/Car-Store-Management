@@ -37,3 +37,24 @@
     color: #122620;
 }
 
+.error-message {
+    margin-top: 50px;
+    width: 80vw;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .error-message img {
+    height: 200px;
+    margin-bottom: 40px;
+  }
+
+  .error-message p {
+    font-size: 20px;
+    font-weight: 500;
+    color: #141414;
+  }
+
