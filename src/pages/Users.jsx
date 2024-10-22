@@ -9,7 +9,7 @@ import dummy from "../assets/images/dummy.jpg";
 import AddUser from "../components/model/AddUser";
 import { useDeleteUserMutation, useGetAllUsersQuery } from "../store/api/userApi";
 import Swal from "sweetalert2";
-
+import nodataImg from "../assets/images/nodata.svg";
 
 function Users() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -176,6 +176,12 @@ function Users() {
               ))}
             </tbody>
           </Table>
+          {filteredUsers?.length == 0 && (
+            <div className="error-message">
+              <img src={nodataImg} />
+              <p>No Data Available!</p>
+            </div>
+          )}
         </div>
       </div>
       <AddUser

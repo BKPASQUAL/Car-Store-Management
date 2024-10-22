@@ -5,9 +5,10 @@ import { useGetAllBrandsQuery } from "../store/api/brands";
 import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 import AddBrand from "../components/model/AddBrand"; // Import the modal
+import nodataImg from "../assets/images/nodata.svg";
 
 export default function Brands() {
-  const { data: brandData } = useGetAllBrandsQuery(); 
+  const { data: brandData } = useGetAllBrandsQuery();
   const [isModalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -25,7 +26,11 @@ export default function Brands() {
 
   return (
     <>
-      <Navbar title={"Brands"} icon={"emoji_transportation"} count={brandData?.payload?.length} />
+      <Navbar
+        title={"Brands"}
+        icon={"emoji_transportation"}
+        count={brandData?.payload?.length}
+      />
 
       <div className="brands-con">
         <div className="brands-top">
@@ -70,14 +75,17 @@ export default function Brands() {
               </div>
             </div>
           ))}
+          {filteredBrands?.length == 0 && (
+            <div className="error-message">
+              <img src={nodataImg} />
+              <p>No Data Available!</p>
+            </div>
+          )}
         </div>
       </div>
 
       {/* AddBrand modal invocation with props */}
-      <AddBrand
-        open={isModalOpen}
-        handleClose={handleCloseModal}
-      />
+      <AddBrand open={isModalOpen} handleClose={handleCloseModal} />
     </>
   );
 }

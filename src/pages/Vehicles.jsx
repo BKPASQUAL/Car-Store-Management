@@ -7,6 +7,7 @@ import { InputPicker } from "rsuite";
 import AddVehicle from "../components/model/AddVehicle";
 import Table from "react-bootstrap/Table";
 import "../assets/css/Table.css";
+import nodataImg from "../assets/images/nodata.svg";
 import {
   useDeleteCarMutation,
   useGetAllCarsQuery,
@@ -17,40 +18,41 @@ import { useGetAllBrandsQuery } from "../store/api/brands";
 
 function Vehicles() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); 
-  const [selectedCarId, setSelectedCarId] = useState(null); 
-  const [selectedBrand, setSelectedBrand] = useState(null); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCarId, setSelectedCarId] = useState(null);
+  const [selectedBrand, setSelectedBrand] = useState(null);
   const { data: carData, refetch: allVehiclesRefetch } = useGetAllCarsQuery();
   const [deleteVehicle] = useDeleteCarMutation();
-  const { data: getAllBrands } = useGetAllBrandsQuery(); 
+  const { data: getAllBrands } = useGetAllBrandsQuery();
 
-  console.log(getAllBrands)
+  console.log(getAllBrands);
   const handleOpenModal = () => {
     setModalOpen(true);
   };
 
   const handleUpdate = (carId) => {
-    setSelectedCarId(carId); 
-    setModalOpen(true); 
-    console.log(carId)
+    setSelectedCarId(carId);
+    setModalOpen(true);
+    console.log(carId);
   };
 
   const handleCloseModal = () => {
     setModalOpen(false);
-    setSelectedCarId(null); 
+    setSelectedCarId(null);
   };
 
   const filteredCars = carData?.payload?.filter(
     (car) =>
       (car?.carName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())) &&
-      (selectedBrand ? car.brandId === selectedBrand : true) 
+        car?.brandName?.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      (selectedBrand ? car.brandId === selectedBrand : true)
   );
 
-  const brandOptions = getAllBrands?.payload?.map((brand) => ({
-    label: brand.brandName, 
-    value: brand.id,   
-  })) || [];
+  const brandOptions =
+    getAllBrands?.payload?.map((brand) => ({
+      label: brand.brandName,
+      value: brand.id,
+    })) || [];
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -113,8 +115,8 @@ function Vehicles() {
             <InputGroup inside style={{ width: "500px" }} size="lg">
               <Input
                 placeholder="Search Vehicles By Name or Brand ..."
-                value={searchQuery} 
-                onChange={(value) => setSearchQuery(value)} 
+                value={searchQuery}
+                onChange={(value) => setSearchQuery(value)}
               />
               <InputGroup.Button>
                 <SearchIcon />
@@ -127,7 +129,7 @@ function Vehicles() {
               style={{ width: 250, marginRight: "60px" }}
               size="lg"
               placeholder="Select Brand"
-              onChange={(value) => setSelectedBrand(value)} 
+              onChange={(value) => setSelectedBrand(value)}
               value={selectedBrand}
             />
             <button className="carStore-add-btn" onClick={handleOpenModal}>
@@ -179,7 +181,7 @@ function Vehicles() {
                   <td style={{ width: "12%" }} className="table-icon">
                     <span
                       className="material-symbols-outlined"
-                      onClick={() => handleUpdate(car.id)} 
+                      onClick={() => handleUpdate(car.id)}
                     >
                       edit
                     </span>
@@ -199,12 +201,18 @@ function Vehicles() {
               ))}
             </tbody>
           </Table>
+          {filteredCars?.length == 0 && (
+            <div className="error-message">
+              <img src={nodataImg} />
+              <p>No Data Available!</p>
+            </div>
+          )}
         </div>
       </div>
       <AddVehicle
         open={isModalOpen}
         handleClose={handleCloseModal}
-        carId={selectedCarId} 
+        carId={selectedCarId}
       />
     </>
   );
