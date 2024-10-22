@@ -1,49 +1,121 @@
 .dashboard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: #f4f4f4;
-    min-height: 100vh;
-  }
-  
-  .dashboard-title {
-    font-size: 32px;
-    font-family: "Playfair Display", serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f4f4f4;
+  min-height: 85vh;
+}
+
+.dashboard-cards {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin-top: 20px;
+}
+
+.dashboard-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  text-align: center;
+  width: 20%;
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card-data {
+  text-align: left;
+}
+
+.dashboard-card span {
+  font-size: 40px;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px !important;
+}
+
+.card-value {
+  font-size: 40px;
+  font-weight: 600;
+  color: #b68d40;
+  margin: 0;
+}
+
+.btm-con {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 40px;
+}
+
+.chart-con {
+  width: 55%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+
+  p {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
     margin-bottom: 20px;
   }
-  
-  .dashboard-cards {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    max-width: 1200px;
-  }
-  
-  .dashboard-card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    width: 30%;
-    transition: all 0.3s ease;
-  }
-  
-  .dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  .card-title {
-    font-size: 24px;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .card-value {
-    font-size: 48px;
-    font-weight: bold;
-    color: #b68d40; /* You can customize this color */
-  }
-  
+}
+
+.dash-inq-con {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 40px;
+  width: 40%;
+  background-color: rgb(255, 255, 255);
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+.dash-inq-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.dash-inquiry-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.dash-inquiry-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dash-inquiry-card h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.dash-inquiry-card p {
+  margin: 2px 0;
+  color: #555;
+}

@@ -2,6 +2,8 @@
 .inquiries-container {
   padding: 20px 40px;
   display: grid;
+  justify-content: center;
+  align-items: center;
   grid-template-columns: repeat(3, 1fr); /* Change to 3 columns */
   gap: 40px; /* Adjust the gap as needed */
   margin-top: 20px;
@@ -9,6 +11,7 @@
 
 /* Inquiry card styling */
 .inquiry-card {
+  max-width: 700px;
   background: #fffaea;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -33,6 +36,7 @@
 .inquiry-header h3 {
   margin: 0;
   color: #333;
+  font-size: 24px;
 }
 
 /* Button styles */
@@ -72,11 +76,10 @@
 
 /* Information section with icons */
 .inquiry-info-con {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 0 10px;
-  padding-bottom: 20px;
 }
 
 .inquiry-info {

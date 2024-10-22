@@ -25,11 +25,10 @@ export const carStoreApi = api.injectEndpoints({
       }),
     }),
 
-    
     getCardataById: builder.query({
       query: (vehicleId) => `cars/${vehicleId}`,
     }),
-    
+
     updateCar: builder.mutation({
       query: ({ id, inputData }) => {
         return {
@@ -38,7 +37,11 @@ export const carStoreApi = api.injectEndpoints({
           body: inputData,
         };
       },
-    })
+    }),
+
+    getCarsCount: builder.query({
+      query: () => "/cars/brandsCarCount",
+    }),
   }),
 });
 
@@ -48,4 +51,5 @@ export const {
   useDeleteCarMutation,
   useGetCardataByIdQuery,
   useUpdateCarMutation,
+  useGetCarsCountQuery,
 } = carStoreApi;
