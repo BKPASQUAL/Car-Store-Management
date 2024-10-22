@@ -133,7 +133,7 @@ function Users() {
             <tbody>
               {filteredUsers?.map((user, index) => (
                 <tr key={user.id}>
-                  <td style={{ width: "5%" }}>
+                  <td style={{ width: "10%" }} className="img-col">
                     <img
                       src={user.image || dummy}
                       alt={`${user.name}`}
@@ -148,11 +148,11 @@ function Users() {
                   <td style={{ width: "15%" }} className="carStore-table">
                     {user.name}
                   </td>
-                  <td style={{ width: "15%" }}>{user.role?.role}</td>
+                  <td style={{ width: "10%" }}>{user.role?.role}</td>
                   <td style={{ width: "15%" }}>{user.email}</td>
                   <td style={{ width: "15%" }}>{user.contactNo}</td>
-                  <td style={{ width: "15%" }}>{user.address}</td>
-                  <td style={{ width: "15%" }}>{user.gender}</td>
+                  <td style={{ width: "20%" }}>{user.address}</td>
+                  <td style={{ width: "10%" }}>{user.gender}</td>
                   <td style={{ width: "10%" }} className="table-icon">
                     <span
                       className="material-symbols-outlined"
