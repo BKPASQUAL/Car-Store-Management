@@ -1,29 +1,28 @@
 .product-table {
-    margin: 3%;
-    width: 94% !important;
-    margin-top: 0;
-  }
-  
-  .product-table th, 
-  .product-table td {
-    vertical-align: middle;   
-    text-align: center;
-  }
-  
-  .table-fixed thead {
-    position: sticky;
-    top: 0;
-    background-color: #fff; /* Add your desired background color */
-    z-index: 1;
-  }
+  margin: 3%;
+  width: 94% !important;
+  margin-top: 0;
+}
 
-  .table-icon {
-    color: rgb(53, 53, 53) !important; /* Makes the edit icon blue */
-    cursor: pointer; /* Changes the cursor to a pointer on hover */
-  }
-  
-  .table-icon-pen {
-    color: red !important; /* Makes the delete icon red */
-    cursor: pointer; /* Changes the cursor to a pointer on hover */
-  }
-  
+.product-table th, 
+.product-table td {
+  vertical-align: middle;   
+  text-align: left; /* Align text to the left */
+}
+
+.table-fixed thead {
+  position: sticky;
+  top: 0;
+  background-color: #fff; /* Add your desired background color */
+  z-index: 1;
+}
+
+.table-icon {
+  color: rgb(53, 53, 53) !important; /* Keeps the edit icon blue */
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
+}
+
+.table-icon-pen {
+  color: red !important; /* Keeps the delete icon red */
+  cursor: pointer; /* Changes the cursor to a pointer on hover */
+}
