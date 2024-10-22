@@ -113,10 +113,15 @@ const AddUser = ({ open, handleClose, userId }) => {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-
+  
+    // Append only the keys that have a value
     Object.keys(data).forEach((key) => {
-      formData.append(key, data[key]);
+      if (key !== "password" || data[key]) {
+        formData.append(key, data[key]);
+      }
     });
+  
+    // Handle file uploads
     selectedFiles.forEach((file) => {
       if (file.url) {
         // Ignore already uploaded images
@@ -125,10 +130,10 @@ const AddUser = ({ open, handleClose, userId }) => {
         formData.append("image", file);
       }
     });
-
+  
     try {
       handleClose();
-
+  
       Swal.fire({
         title: userId ? "Updating User..." : "Adding User...",
         allowOutsideClick: false,
@@ -136,7 +141,7 @@ const AddUser = ({ open, handleClose, userId }) => {
           Swal.showLoading();
         },
       });
-
+  
       let response;
       if (isUpdateUser) {
         // Update user if userId is present
@@ -145,6 +150,7 @@ const AddUser = ({ open, handleClose, userId }) => {
         // Add new user if no userId
         response = await addUser(formData);
       }
+      console.log("Form Data:", data); // This logs the form object
 
       if (response?.data?.payload && !response?.data?.error) {
         Swal.close();
@@ -182,7 +188,7 @@ const AddUser = ({ open, handleClose, userId }) => {
       });
     }
   };
-
+  
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
