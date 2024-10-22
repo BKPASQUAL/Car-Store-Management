@@ -7,7 +7,7 @@ import image from "../../assets/images/logo.webp";
 
 function SidebarComp() {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedMenuItem, setSelectedMenuItem] = useState("dashbourd");
+  const [selectedMenuItem, setSelectedMenuItem] = useState("dashboard");
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const handleLogoutOpen = () => {
@@ -43,14 +43,14 @@ function SidebarComp() {
           <div className="sidebar-link">
             <MenuItem
               className={
-                selectedMenuItem === "dashbourd" ? "selected-menu-item" : ""
+                selectedMenuItem === "dashboard" ? "selected-menu-item" : ""
               }
               icon={
                 <span className="material-symbols-outlined sidebar-icon">
                   dashboard
                 </span>
               }
-              onClick={() => handleMenuItemClick("dashbourd")}
+              onClick={() => handleMenuItemClick("dashboard")}
             >
               Dashboard
             </MenuItem>
