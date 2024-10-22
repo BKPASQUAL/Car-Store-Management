@@ -2,25 +2,24 @@ import React, { useState } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "../../assets/css/Sidebar.css";
 import { useNavigate } from "react-router-dom";
-// import LogoutModal from "../modals/Logout";
+import LogoutModal from "../model/LogoutModal";
 import image from "../../assets/images/logo.webp";
 
 function SidebarComp() {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState("dashbourd");
-  const [LogoutOpen, setLogoutOpen] = useState(false);
-  // const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
-  // const handleLogoutOpen = () => {
-  //   setLogoutModalOpen(true);
-  // };
+  const handleLogoutOpen = () => {
+    setLogoutModalOpen(true);
+  };
 
-  // const handleLogoutClose = () => {
-  //   setLogoutOpen(false);
-  //   setLogoutModalOpen(false);
-  // };
+  const handleLogoutClose = () => {
+    setLogoutModalOpen(false);
+  };
 
   const navigate = useNavigate();
+
   const handleMenuItemClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
     navigate(menuItem);
@@ -40,17 +39,7 @@ function SidebarComp() {
             <img src={image} alt="Your Image" className="sidebar-logo" />
           </div>
 
-          {/* <div
-            className="collapse-btn"
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            <span
-              style={{ fontWeight: "600" }}
-              className="material-symbols-outlined sidebar-icon"
-            >
-              menu
-            </span>
-          </div> */}
+          {/* Dashboard Menu Item */}
           <div className="sidebar-link">
             <MenuItem
               className={
@@ -66,6 +55,8 @@ function SidebarComp() {
               Dashboard
             </MenuItem>
           </div>
+
+          {/* Vehicles Menu Item */}
           <div className="sidebar-link">
             <MenuItem
               className={
@@ -81,6 +72,8 @@ function SidebarComp() {
               Vehicles
             </MenuItem>
           </div>
+
+          {/* Brands Menu Item */}
           <div className="sidebar-link">
             <MenuItem
               className={
@@ -96,6 +89,8 @@ function SidebarComp() {
               Brands
             </MenuItem>
           </div>
+
+          {/* Inquiries Menu Item */}
           <div className="sidebar-link">
             <MenuItem
               className={
@@ -111,6 +106,8 @@ function SidebarComp() {
               Inquiries
             </MenuItem>
           </div>
+
+          {/* Users Menu Item */}
           <div className="sidebar-link">
             <MenuItem
               className={
@@ -127,15 +124,20 @@ function SidebarComp() {
             </MenuItem>
           </div>
         </Menu>
-        <div className="sidebar-logout" >
+
+        {/* Logout Section */}
+        <div className="sidebar-logout" onClick={handleLogoutOpen}>
           <span className="material-symbols-outlined sidebar-logout-icon">
             logout
           </span>
           <p>Logout</p>
         </div>
       </Sidebar>
-      {/* <LogoutModal open={logoutModalOpen} handleClose={handleLogoutClose} /> */}
+
+      {/* Logout Modal */}
+      <LogoutModal open={logoutModalOpen} handleClose={handleLogoutClose} />
     </>
   );
 }
+
 export default SidebarComp;

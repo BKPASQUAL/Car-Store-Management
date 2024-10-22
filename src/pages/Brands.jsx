@@ -4,20 +4,29 @@ import "../assets/css/Brands.css";
 import { useGetAllBrandsQuery } from "../store/api/brands";
 import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
-import AddBrand from "../components/model/AddBrand"; // Import the modal
+import AddBrand from "../components/model/AddBrand"; 
 import nodataImg from "../assets/images/nodata.svg";
 
 export default function Brands() {
   const { data: brandData } = useGetAllBrandsQuery();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedBrandId, setSelectedBrandId] = useState(null); 
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleOpenModal = () => {
     setModalOpen(true);
+    setSelectedBrandId(null); 
+  };
+
+  const handleUpdate = (brandId) => {
+    setSelectedBrandId(brandId); 
+    setModalOpen(true); 
+    console.log(brandId);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false);
+    setModalOpen(false); 
+    setSelectedBrandId(null); 
   };
 
   const filteredBrands = brandData?.payload.filter((brand) =>
@@ -66,7 +75,10 @@ export default function Brands() {
               />
               <p>{brand.brandName}</p>
               <div className="card-actions">
-                <span className="material-symbols-outlined edit-icon">
+                <span
+                  className="material-symbols-outlined edit-icon"
+                  onClick={() => handleUpdate(brand.id)}
+                >
                   edit
                 </span>
                 <span className="material-symbols-outlined delete-icon">
@@ -75,9 +87,9 @@ export default function Brands() {
               </div>
             </div>
           ))}
-          {filteredBrands?.length == 0 && (
+          {filteredBrands?.length === 0 && (
             <div className="error-message">
-              <img src={nodataImg} />
+              <img src={nodataImg} alt="No data" />
               <p>No Data Available!</p>
             </div>
           )}
@@ -85,7 +97,7 @@ export default function Brands() {
       </div>
 
       {/* AddBrand modal invocation with props */}
-      <AddBrand open={isModalOpen} handleClose={handleCloseModal} />
+      <AddBrand open={isModalOpen} handleClose={handleCloseModal} brandId={selectedBrandId} />
     </>
   );
 }

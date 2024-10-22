@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Modal, TextField, Button, CircularProgress } from "@mui/material";
 import CameraRetroIcon from "@rsuite/icons/legacy/CameraRetro";
 import Swal from "sweetalert2";
 import "../../assets/css/AddBrand.css";
 import {
   useAddBrandMutation,
+  useUpdatebrandMutation,  // For updating brand
   useGetAllBrandsQuery,
+  useGetBrandByIdQuery,
 } from "../../store/api/brands";
 
 const style = {
@@ -20,12 +22,35 @@ const style = {
   borderRadius: "8px",
 };
 
-const AddBrand = ({ open, handleClose }) => {
+const AddBrand = ({ open, handleClose, brandId }) => {
   const [brandName, setBrandName] = useState("");
   const [brandImage, setBrandImage] = useState(null);
+  const [existingImage, setExistingImage] = useState(null); // For existing image when editing
   const [loading, setLoading] = useState(false);
+  
   const [addBrand] = useAddBrandMutation();
+  const [updateBrand] = useUpdatebrandMutation();  // Mutation for updating brand
   const { refetch } = useGetAllBrandsQuery();
+  const { data: getBrandById, isLoading } = useGetBrandByIdQuery(brandId, {
+    skip: !brandId,
+  });
+
+  // Effect to load brand data when editing
+  useEffect(() => {
+    if (getBrandById?.payload && brandId && !isLoading) {
+      const brandData = getBrandById.payload;
+      setBrandName(brandData.brandName);  // Populate brand name
+      setExistingImage(brandData.brandImage);  // Populate existing image URL
+    } else if (!brandId) {
+      resetForm(); // Reset form when adding new brand
+    }
+  }, [getBrandById, isLoading, brandId]);
+
+  const resetForm = () => {
+    setBrandName("");
+    setBrandImage(null);
+    setExistingImage(null);
+  };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -34,7 +59,7 @@ const AddBrand = ({ open, handleClose }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (!brandName || !brandImage) {
+    if (!brandName || (!brandImage && !existingImage)) {
       Swal.fire({
         icon: "error",
         title: "Missing Fields",
@@ -48,21 +73,35 @@ const AddBrand = ({ open, handleClose }) => {
 
     const formData = new FormData();
     formData.append("brandName", brandName);
-    formData.append("brandImage", brandImage);
+    if (brandImage) formData.append("brandImage", brandImage); // Append image only if new one is uploaded
+    
+    // Log data to the console
+    console.log("Form Data Submitted:", {
+      brandName,
+      brandImage: brandImage ? brandImage.name : "Using existing image",
+    });
 
     setLoading(true);
     try {
-      const response = await addBrand(formData).unwrap();
+      let response;
+      if (brandId) {
+        // Update brand if editing
+        response = await updateBrand({ id: brandId, inputData: formData }).unwrap();
+      } else {
+        // Add new brand if no brandId
+        response = await addBrand(formData).unwrap();
+      }
+      
       Swal.fire({
         icon: "success",
-        title: "Brand Added",
-        text: `${response.message || "The brand has been added successfully!"}`,
+        title: brandId ? "Brand Updated" : "Brand Added",
+        text: `${response.message || "The brand has been saved successfully!"}`,
         showConfirmButton: false,
         timer: 2000,
       });
+      
       refetch();
-      setBrandName("");
-      setBrandImage(null);
+      resetForm();
       handleClose();
     } catch (error) {
       Swal.fire({
@@ -72,17 +111,18 @@ const AddBrand = ({ open, handleClose }) => {
           container: "swal-warning",
         },
         text:
-          error.data?.message || "Failed to add the brand. Please try again.",
+          error.data?.message || "Failed to save the brand. Please try again.",
       });
     } finally {
       setLoading(false);
     }
   };
 
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <h2 className="addveh-title">Add New Brand</h2>
+        <h2 className="addveh-title">{brandId ? "Edit Brand" : "Add New Brand"}</h2>
         <hr />
         <form onSubmit={handleFormSubmit}>
           <div className="image-upload">
@@ -99,17 +139,20 @@ const AddBrand = ({ open, handleClose }) => {
                 onChange={handleImageUpload}
               />
             </Button>
-            {brandImage && (
+            {(brandImage || existingImage) && (
               <div className="logo-preview">
                 <img
-                  src={URL.createObjectURL(brandImage)}
+                  src={brandImage ? URL.createObjectURL(brandImage) : existingImage} // Show new image or existing image
                   alt="Brand Logo Preview"
                   className="preview-img"
                   style={{ marginTop: "20px" }}
                 />
                 <span
                   className="material-symbols-outlined"
-                  onClick={() => setBrandImage(null)}
+                  onClick={() => {
+                    setBrandImage(null);
+                    setExistingImage(null); // Clear both images
+                  }}
                 >
                   delete
                 </span>
@@ -129,8 +172,7 @@ const AddBrand = ({ open, handleClose }) => {
             <button
               className="addvehicle-cancel-btn"
               onClick={() => {
-                setBrandName("");
-                setBrandImage(null);
+                resetForm();
                 handleClose();
               }}
             >
