@@ -18,7 +18,7 @@ function Navbar({ title, icon, count }) {
           <h2>
             {title}
             {count !== undefined
-              ? `| ${count.toString().padStart(2, "0")}`
+              ? ` | ${count.toString().padStart(2, "0")}`
               : ""}
           </h2>
         </div>
